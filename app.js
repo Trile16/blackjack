@@ -242,6 +242,7 @@ function dealCards() {
       playerSeat.appendChild(card);
     } else if (i === 3) {
       card.innerHTML = "Hidden";
+      card.setAttribute("id", "dealer-hidden-card");
       gameState.dealerCards.push(gameState.cards[cardChoice]);
       dealerSeat.appendChild(card);
     } else {
@@ -284,6 +285,7 @@ function checkPlayerCardValue() {
 
 function checkDealerCardValue() {
   //Grab the value for the dealer with dealer card array
+  gameState.dealerValue = 0;
   for (let card of gameState.dealerCards) {
     console.log(card[0]);
     if (card[0] === "A") {
@@ -329,22 +331,48 @@ function dealerHit() {
   gameState.dealerCards.push(gameState.cards[cardChoice]);
   dealerSeat.appendChild(card);
   gameState.cards.splice(cardChoice, 1);
+  setTimeout(() => {});
 }
 
 function playerStay() {
-  dealerHit();
-  checkDealerCardValue();
+  const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+  dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+  while (gameState.dealerValue < 17) {
+    dealerHit();
+    checkDealerCardValue();
+  }
   if (gameState.dealerValue >= 21) {
-    console.log("player win!");
+    gameWon();
   } else if (gameState.dealerValue >= 17) {
     if (gameState.dealerValue < gameState.playerValue) {
-      console.log("player win!~");
+      gameWon();
     } else if (gameState.dealerValue > gameState.playerValue) {
       gameLost();
     } else if (gameState.dealerValue === gameState.playerValue) {
-      console.log("push!");
+      gamePush();
     }
   }
+}
+
+function gameWon() {
+  console.log("BUST!");
+  gameState.playerValue = 0;
+  gameState.dealerValue = 0;
+  gameState.playerCards = [];
+  gameState.dealerCards = [];
+
+  gameState.money += gameState.moneyInPlay * 2;
+  moneyInPlay.innerHTML = `You have won ${gameState.moneyInPlay * 2}!`;
+  gameState.moneyInPlay = 0;
+  moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+
+  hit.setAttribute("class", "hidden");
+  stay.setAttribute("class", "hidden");
+  five.removeAttribute("class");
+  ten.removeAttribute("class");
+  twentyFive.removeAttribute("class");
+  maxButton.removeAttribute("class");
+  startGame.removeAttribute("class");
 }
 
 function gameLost() {
@@ -353,8 +381,29 @@ function gameLost() {
   gameState.dealerValue = 0;
   gameState.playerCards = [];
   gameState.dealerCards = [];
+  moneyInPlay.innerHTML = `You have lost ${gameState.moneyInPlay}...`;
   gameState.moneyInPlay = 0;
-  moneyInPlay.innerHTML = "";
+
+  hit.setAttribute("class", "hidden");
+  stay.setAttribute("class", "hidden");
+  five.removeAttribute("class");
+  ten.removeAttribute("class");
+  twentyFive.removeAttribute("class");
+  maxButton.removeAttribute("class");
+  startGame.removeAttribute("class");
+}
+
+function gamePush() {
+  console.log("BUST!");
+  gameState.playerValue = 0;
+  gameState.dealerValue = 0;
+  gameState.playerCards = [];
+  gameState.dealerCards = [];
+
+  gameState.money += gameState.moneyInPlay;
+  gameState.moneyInPlay = 0;
+  moneyInPlay.innerHTML = "Push!";
+  moneyDisplay.innerHTML = `Money: ${gameState.money}`;
 
   hit.setAttribute("class", "hidden");
   stay.setAttribute("class", "hidden");
