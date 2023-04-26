@@ -201,5 +201,20 @@ function gameStart() {
     startGame.remove();
     playerChoices.appendChild(hit);
     playerChoices.appendChild(stay);
+
+    for (let i = 0; i < 4; i++) {
+      let cardChoice = Math.floor(Math.random() * gameState.cards.length);
+      console.log(cardChoice);
+      const card = document.createElement("div");
+      card.setAttribute("class", "card");
+      card.innerHTML = gameState.cards[cardChoice];
+      if (i % 2 === 0) {
+        playerSeat.appendChild(card);
+      } else {
+        dealerSeat.appendChild(card);
+      }
+      gameState.cards.splice(cardChoice, 1);
+      console.log(gameState.cards);
+    }
   }
 }
