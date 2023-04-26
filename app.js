@@ -30,12 +30,16 @@ function renderHTML() {
   const ten = document.createElement("button");
   ten.setAttribute("id", "ten");
   ten.innerHTML = "10";
+  const maxBet = document.createElement("button");
+  maxBet.setAttribute("id", "max-bet");
+  maxBet.innerHTML = "Max Bet";
   const twentyFive = document.createElement("button");
   twentyFive.setAttribute("id", "twenty-five");
   twentyFive.innerHTML = "25";
   playerChoices.appendChild(five);
   playerChoices.appendChild(ten);
   playerChoices.appendChild(twentyFive);
+  playerChoices.appendChild(maxBet);
   gameBoard.appendChild(gameTitle);
   gameBoard.appendChild(table);
   gameBoard.appendChild(money);
@@ -49,12 +53,14 @@ renderHTML();
 const five = document.getElementById("five");
 const ten = document.getElementById("ten");
 const twentyFive = document.getElementById("twenty-five");
+const maxButton = document.getElementById("max-bet");
 const moneyDisplay = document.getElementById("money-display");
 const moneyInPlay = document.getElementById("money-in-play");
 
 five.addEventListener("click", addFive);
 ten.addEventListener("click", addTen);
 twentyFive.addEventListener("click", addTwentyFive);
+maxButton.addEventListener("click", maxBet);
 
 // Game State
 
@@ -153,6 +159,19 @@ function addTwentyFive() {
   ) {
     gameState.money -= 25;
     gameState.moneyInPlay += 25;
+    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
+  }
+}
+
+function maxBet() {
+  if (
+    gameState.moneyInPlay < 50 &&
+    50 - gameState.moneyInPlay <= gameState.money
+  ) {
+    let subtractFromMoney = 50 - gameState.moneyInPlay;
+    gameState.money -= subtractFromMoney;
+    gameState.moneyInPlay = 50;
     moneyDisplay.innerHTML = `Money: ${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
   }
