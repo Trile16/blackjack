@@ -36,10 +36,14 @@ function renderHTML() {
   const twentyFive = document.createElement("button");
   twentyFive.setAttribute("id", "twenty-five");
   twentyFive.innerHTML = "25";
+  const startGame = document.createElement("button");
+  startGame.setAttribute("id", "game-start");
+  startGame.innerHTML = "Start";
   playerChoices.appendChild(five);
   playerChoices.appendChild(ten);
   playerChoices.appendChild(twentyFive);
   playerChoices.appendChild(maxBet);
+  playerChoices.appendChild(startGame);
   gameBoard.appendChild(gameTitle);
   gameBoard.appendChild(table);
   gameBoard.appendChild(money);
@@ -56,11 +60,14 @@ const twentyFive = document.getElementById("twenty-five");
 const maxButton = document.getElementById("max-bet");
 const moneyDisplay = document.getElementById("money-display");
 const moneyInPlay = document.getElementById("money-in-play");
+const startGame = document.getElementById("game-start");
+const playerChoices = document.getElementById("player-choice");
 
 five.addEventListener("click", addFive);
 ten.addEventListener("click", addTen);
 twentyFive.addEventListener("click", addTwentyFive);
 maxButton.addEventListener("click", maxBet);
+startGame.addEventListener("click", gameStart);
 
 // Game State
 
@@ -177,4 +184,22 @@ function maxBet() {
   }
 }
 
-function gameStart() {}
+function gameStart() {
+  if (gameState.moneyInPlay) {
+    // This will remove the pre-game buttons and add in gameplay buttons
+    console.log("hello! you've started the game");
+    const hit = document.createElement("button");
+    hit.setAttribute("id", "hit");
+    hit.innerHTML = "Hit";
+    const stay = document.createElement("button");
+    stay.setAttribute("id", "stay");
+    stay.innerHTML = "Stay";
+    five.remove();
+    ten.remove();
+    twentyFive.remove();
+    maxButton.remove();
+    startGame.remove();
+    playerChoices.appendChild(hit);
+    playerChoices.appendChild(stay);
+  }
+}
