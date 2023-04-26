@@ -39,11 +39,21 @@ function renderHTML() {
   const startGame = document.createElement("button");
   startGame.setAttribute("id", "game-start");
   startGame.innerHTML = "Start";
+  const hit = document.createElement("button");
+  hit.setAttribute("id", "hit");
+  hit.setAttribute("class", "hidden");
+  hit.innerHTML = "Hit";
+  const stay = document.createElement("button");
+  stay.setAttribute("id", "stay");
+  stay.setAttribute("class", "hidden");
+  stay.innerHTML = "Stay";
   playerChoices.appendChild(five);
   playerChoices.appendChild(ten);
   playerChoices.appendChild(twentyFive);
   playerChoices.appendChild(maxBet);
   playerChoices.appendChild(startGame);
+  playerChoices.appendChild(hit);
+  playerChoices.appendChild(stay);
   gameBoard.appendChild(gameTitle);
   gameBoard.appendChild(table);
   gameBoard.appendChild(money);
@@ -62,12 +72,15 @@ const moneyDisplay = document.getElementById("money-display");
 const moneyInPlay = document.getElementById("money-in-play");
 const startGame = document.getElementById("game-start");
 const playerChoices = document.getElementById("player-choice");
+const hit = document.getElementById("hit");
+const stay = document.getElementById("stay");
 
 five.addEventListener("click", addFive);
 ten.addEventListener("click", addTen);
 twentyFive.addEventListener("click", addTwentyFive);
 maxButton.addEventListener("click", maxBet);
 startGame.addEventListener("click", gameStart);
+hit.addEventListener("click", playerHit);
 
 // Game State
 
@@ -131,6 +144,13 @@ const gameState = {
   minimumBet: 5,
   maximumBet: 50,
   moneyInPlay: 0,
+  playerCards: [],
+  dealerCards: [],
+  playerValue: 0,
+  dealerValue: 0,
+  playerAceCounter: 0,
+  dealerAceCounter: 0,
+  playerTurn: true,
 };
 
 // Game Functionality
@@ -186,35 +206,128 @@ function maxBet() {
 
 function gameStart() {
   if (gameState.moneyInPlay) {
-    // This will remove the pre-game buttons and add in gameplay buttons
-    console.log("hello! you've started the game");
-    const hit = document.createElement("button");
-    hit.setAttribute("id", "hit");
-    hit.innerHTML = "Hit";
-    const stay = document.createElement("button");
-    stay.setAttribute("id", "stay");
-    stay.innerHTML = "Stay";
-    five.remove();
-    ten.remove();
-    twentyFive.remove();
-    maxButton.remove();
-    startGame.remove();
-    playerChoices.appendChild(hit);
-    playerChoices.appendChild(stay);
-
-    for (let i = 0; i < 4; i++) {
-      let cardChoice = Math.floor(Math.random() * gameState.cards.length);
-      console.log(cardChoice);
-      const card = document.createElement("div");
-      card.setAttribute("class", "card");
-      card.innerHTML = gameState.cards[cardChoice];
-      if (i % 2 === 0) {
-        playerSeat.appendChild(card);
-      } else {
-        dealerSeat.appendChild(card);
-      }
-      gameState.cards.splice(cardChoice, 1);
-      console.log(gameState.cards);
-    }
+    changeButtonsForPlay();
+    dealCards();
+    checkPlayerCardValue();
+    checkDealerCardValue();
+    const hit = document.getElementById("hit");
+    const stay = document.getElementById("stay");
+    hit.addEventListener("click", playerHit);
   }
+}
+
+function changeButtonsForPlay() {
+  // This will remove the pre-game buttons and add in gameplay buttons
+  console.log("hello! you've started the game");
+  five.setAttribute("class", "hidden");
+  ten.setAttribute("class", "hidden");
+  twentyFive.setAttribute("class", "hidden");
+  maxButton.setAttribute("class", "hidden");
+  startGame.setAttribute("class", "hidden");
+  hit.removeAttribute("class");
+  stay.removeAttribute("class");
+}
+
+function dealCards() {
+  // Loop to pass cards from player to dealer
+  for (let i = 0; i < 4; i++) {
+    let cardChoice = Math.floor(Math.random() * gameState.cards.length);
+    const card = document.createElement("div");
+    card.setAttribute("class", "card");
+    card.innerHTML = gameState.cards[cardChoice];
+
+    if (i % 2 === 0) {
+      gameState.playerCards.push(gameState.cards[cardChoice]);
+      playerSeat.appendChild(card);
+    } else if (i === 3) {
+      card.innerHTML = "Hidden";
+      gameState.dealerCards.push(gameState.cards[cardChoice]);
+      dealerSeat.appendChild(card);
+    } else {
+      gameState.dealerCards.push(gameState.cards[cardChoice]);
+      dealerSeat.appendChild(card);
+    }
+    gameState.cards.splice(cardChoice, 1);
+
+    console.log("player cards: ", gameState.playerCards);
+    console.log("dealer cards: ", gameState.dealerCards);
+  }
+}
+
+function checkPlayerCardValue() {
+  //Grab the value for the player with player card array
+  gameState.playerValue = 0;
+
+  for (let card of gameState.playerCards) {
+    console.log(card[0]);
+    if (card[0] === "A") {
+      gameState.playerAceCounter++;
+      if (gameState.playerValue + 11 > 21) {
+        gameState.playerValue++;
+      } else {
+        gameState.playerValue += 11;
+      }
+    } else if (
+      card[0] === "J" ||
+      card[0] === "Q" ||
+      card[0] === "K" ||
+      card[0] === "1"
+    ) {
+      gameState.playerValue += 10;
+    } else {
+      gameState.playerValue += parseInt(card[0]);
+    }
+
+    console.log("player value: ", gameState.playerValue);
+  }
+}
+
+function checkDealerCardValue() {
+  //Grab the value for the dealer with dealer card array
+  for (let card of gameState.dealerCards) {
+    console.log(card[0]);
+    if (card[0] === "A") {
+      gameState.dealerAceCounter++;
+      if (gameState.dealerValue + 11 > 21) {
+        gameState.dealerValue++;
+      } else {
+        gameState.dealerValue += 11;
+      }
+    } else if (
+      card[0] === "J" ||
+      card[0] === "Q" ||
+      card[0] === "K" ||
+      card[0] === "1"
+    ) {
+      gameState.dealerValue += 10;
+    } else {
+      gameState.dealerValue += parseInt(card[0]);
+    }
+
+    console.log("dealer value: ", gameState.dealerValue);
+  }
+}
+
+function playerHit() {
+  let cardChoice = Math.floor(Math.random() * gameState.cards.length);
+  const card = document.createElement("div");
+  card.setAttribute("class", "card");
+  card.innerHTML = gameState.cards[cardChoice];
+  gameState.playerCards.push(gameState.cards[cardChoice]);
+  playerSeat.appendChild(card);
+  checkPlayerCardValue();
+  if (gameState.playerValue > 21) {
+    gameLost();
+  }
+}
+
+function gameLost() {
+  console.log("BUST!");
+  hit.setAttribute("class", "hidden");
+  stay.setAttribute("class", "hidden");
+  five.removeAttribute("class");
+  ten.removeAttribute("class");
+  twentyFive.removeAttribute("class");
+  maxButton.removeAttribute("class");
+  startGame.removeAttribute("class");
 }
