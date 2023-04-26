@@ -81,6 +81,7 @@ twentyFive.addEventListener("click", addTwentyFive);
 maxButton.addEventListener("click", maxBet);
 startGame.addEventListener("click", gameStart);
 hit.addEventListener("click", playerHit);
+stay.addEventListener("click", playerStay);
 
 // Game State
 
@@ -148,9 +149,6 @@ const gameState = {
   dealerCards: [],
   playerValue: 0,
   dealerValue: 0,
-  playerAceCounter: 0,
-  dealerAceCounter: 0,
-  playerTurn: true,
 };
 
 // Game Functionality
@@ -230,6 +228,9 @@ function changeButtonsForPlay() {
 
 function dealCards() {
   // Loop to pass cards from player to dealer
+  playerSeat.innerHTML = "";
+  dealerSeat.innerHTML = "";
+
   for (let i = 0; i < 4; i++) {
     let cardChoice = Math.floor(Math.random() * gameState.cards.length);
     const card = document.createElement("div");
@@ -261,7 +262,6 @@ function checkPlayerCardValue() {
   for (let card of gameState.playerCards) {
     console.log(card[0]);
     if (card[0] === "A") {
-      gameState.playerAceCounter++;
       if (gameState.playerValue + 11 > 21) {
         gameState.playerValue++;
       } else {
@@ -287,7 +287,6 @@ function checkDealerCardValue() {
   for (let card of gameState.dealerCards) {
     console.log(card[0]);
     if (card[0] === "A") {
-      gameState.dealerAceCounter++;
       if (gameState.dealerValue + 11 > 21) {
         gameState.dealerValue++;
       } else {
@@ -315,14 +314,48 @@ function playerHit() {
   card.innerHTML = gameState.cards[cardChoice];
   gameState.playerCards.push(gameState.cards[cardChoice]);
   playerSeat.appendChild(card);
+  gameState.cards.splice(cardChoice, 1);
   checkPlayerCardValue();
   if (gameState.playerValue > 21) {
     gameLost();
   }
 }
 
+function dealerHit() {
+  let cardChoice = Math.floor(Math.random() * gameState.cards.length);
+  const card = document.createElement("div");
+  card.setAttribute("class", "card");
+  card.innerHTML = gameState.cards[cardChoice];
+  gameState.dealerCards.push(gameState.cards[cardChoice]);
+  dealerSeat.appendChild(card);
+  gameState.cards.splice(cardChoice, 1);
+}
+
+function playerStay() {
+  dealerHit();
+  checkDealerCardValue();
+  if (gameState.dealerValue >= 21) {
+    console.log("player win!");
+  } else if (gameState.dealerValue >= 17) {
+    if (gameState.dealerValue < gameState.playerValue) {
+      console.log("player win!~");
+    } else if (gameState.dealerValue > gameState.playerValue) {
+      gameLost();
+    } else if (gameState.dealerValue === gameState.playerValue) {
+      console.log("push!");
+    }
+  }
+}
+
 function gameLost() {
   console.log("BUST!");
+  gameState.playerValue = 0;
+  gameState.dealerValue = 0;
+  gameState.playerCards = [];
+  gameState.dealerCards = [];
+  gameState.moneyInPlay = 0;
+  moneyInPlay.innerHTML = "";
+
   hit.setAttribute("class", "hidden");
   stay.setAttribute("class", "hidden");
   five.removeAttribute("class");
