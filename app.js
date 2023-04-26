@@ -229,9 +229,66 @@ function maxBet() {
 function gameStart() {
   if (gameState.moneyInPlay) {
     changeButtonsForPlay();
+    if (gameState.cards.length <= 10) {
+      gameState.cards = [
+        "2S",
+        "3S",
+        "4S",
+        "5S",
+        "6S",
+        "7S",
+        "8S",
+        "9S",
+        "10S",
+        "JS",
+        "QS",
+        "KS",
+        "AS",
+        "2C",
+        "3C",
+        "4C",
+        "5C",
+        "6C",
+        "7C",
+        "8C",
+        "9C",
+        "10C",
+        "JC",
+        "QC",
+        "KC",
+        "AC",
+        "2D",
+        "3D",
+        "4D",
+        "5D",
+        "6D",
+        "7D",
+        "8D",
+        "9D",
+        "10D",
+        "JD",
+        "QD",
+        "KD",
+        "AD",
+        "2H",
+        "3H",
+        "4H",
+        "5H",
+        "6H",
+        "7H",
+        "8H",
+        "9H",
+        "10H",
+        "JH",
+        "QH",
+        "KH",
+        "AH",
+      ];
+    }
     dealCards();
     checkDealerCardValue();
     checkPlayerCardValue();
+    checkBlackjack();
   }
 }
 
@@ -301,19 +358,12 @@ function checkPlayerCardValue() {
       gameState.playerValue += parseInt(card[0]);
     }
 
-    if (
-      gameState.playerValue === 21 &&
-      gameState.playerValue.length === 2 &&
-      gameState.playerValue != 21
-    ) {
-      gameState.moneyInPlay = Math.floor(gameState.moneyInPlay * 1.5);
-      gameWon();
-    }
-
     while (gameState.playerValue > 21 && gameState.playerAceCounter > 0) {
       gameState.playerValue -= 10;
       gameState.playerAceCounter--;
     }
+
+    gameState.playerAceCounter = 0;
 
     console.log("player value: ", gameState.playerValue);
   }
@@ -345,6 +395,8 @@ function checkDealerCardValue() {
       gameState.dealerValue -= 10;
       gameState.dealerAceCounter--;
     }
+
+    gameState.dealerAceCounter = 0;
 
     if (
       gameState.dealerCards.length === 2 &&
@@ -526,6 +578,7 @@ function insuranceNo() {
     no.setAttribute("class", "hidden");
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+    gameState.moneyInPlay *= 2;
     gameLost();
   } else {
     moneyInPlay.innerHTML = gameState.moneyInPlay;
@@ -537,5 +590,16 @@ function insuranceNo() {
     if (gameState.money >= gameState.moneyInPlay) {
       double.removeAttribute("class");
     }
+  }
+}
+
+function checkBlackjack() {
+  if (
+    gameState.playerValue === 21 &&
+    gameState.playerCards.length === 2 &&
+    gameState.dealerValue != 21
+  ) {
+    gameState.moneyInPlay = Math.floor(gameState.moneyInPlay * 1.5);
+    gameWon();
   }
 }
