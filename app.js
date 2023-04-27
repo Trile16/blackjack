@@ -1061,6 +1061,9 @@ function insuranceNo() {
     if (gameState.money >= gameState.moneyInPlay) {
       double.style.removeProperty("display");
     }
+    if (gameState.playerCards[0][0] === gameState.playerCards[1][0]) {
+      split.style.removeProperty("display");
+    }
   }
 }
 
