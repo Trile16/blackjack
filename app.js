@@ -812,10 +812,20 @@ function submitOptions() {
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
   moneyInPlay.innerHTML = "";
   moneyInPlay.style.removeProperty("background-image");
+  playerValueDisplay.innerHTML = "Player: ";
+  dealerValueDisplay.innerHTML = "Dealer: ";
   console.log(gameState.money);
 
   console.log(optionsMinBet.value);
   console.log(optionsMaxBet.value);
+
+  while (dealerSeat.hasChildNodes()) {
+    dealerSeat.removeChild(dealerSeat.firstChild);
+  }
+
+  while (playerSeat.hasChildNodes()) {
+    playerSeat.removeChild(playerSeat.firstChild);
+  }
 
   deckReload();
   console.log(gameState.cards);
