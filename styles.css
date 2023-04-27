@@ -9,6 +9,7 @@ body {
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 #game-board {
@@ -75,8 +76,8 @@ body {
   53%,
   57%,
   100% {
-    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff, 0 0 40px purple,
-      0 0 80px purple, 0 0 90px purple, 0 0 100px purple, 0 0 150px purple;
+    text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 10px #fff, 0 0 20px purple,
+      0 0 40px purple, 0 0 45px purple, 0 0 50px purple, 0 0 75px purple;
   }
 
   20%,
@@ -166,4 +167,17 @@ button:before {
 
 button:-webkit-details-marker {
   display: none;
+}
+
+#options {
+  width: 10rem;
+  background-color: grey;
+  height: 45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-style: solid;
+  border-width: 5px;
+  border-left: 0px;
 }

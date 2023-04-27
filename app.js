@@ -1,62 +1,62 @@
 // Game State
-
+const cardsArray = [
+  "2♠",
+  "3♠",
+  "4♠",
+  "5♠",
+  "6♠",
+  "7♠",
+  "8♠",
+  "9♠",
+  "10♠",
+  "J♠",
+  "Q♠",
+  "K♠",
+  "A♠",
+  "2♣",
+  "3♣",
+  "4♣",
+  "5♣",
+  "6♣",
+  "7♣",
+  "8♣",
+  "9♣",
+  "10♣",
+  "J♣",
+  "Q♣",
+  "K♣",
+  "A♣",
+  "2♦",
+  "3♦",
+  "4♦",
+  "5♦",
+  "6♦",
+  "7♦",
+  "8♦",
+  "9♦",
+  "10♦",
+  "J♦",
+  "Q♦",
+  "K♦",
+  "A♦",
+  "2♥",
+  "3♥",
+  "4♥",
+  "5♥",
+  "6♥",
+  "7♥",
+  "8♥",
+  "9♥",
+  "10♥",
+  "J♥",
+  "Q♥",
+  "K♥",
+  "A♥",
+];
 const gameState = {
   playerName: "Player 1",
   money: 100,
-  cards: [
-    "2♠",
-    "3♠",
-    "4♠",
-    "5♠",
-    "6♠",
-    "7♠",
-    "8♠",
-    "9♠",
-    "10♠",
-    "J♠",
-    "Q♠",
-    "K♠",
-    "A♠",
-    "2♣",
-    "3♣",
-    "4♣",
-    "5♣",
-    "6♣",
-    "7♣",
-    "8♣",
-    "9♣",
-    "10♣",
-    "J♣",
-    "Q♣",
-    "K♣",
-    "A♣",
-    "2♦",
-    "3♦",
-    "4♦",
-    "5♦",
-    "6♦",
-    "7♦",
-    "8♦",
-    "9♦",
-    "10♦",
-    "J♦",
-    "Q♦",
-    "K♦",
-    "A♦",
-    "2♥",
-    "3♥",
-    "4♥",
-    "5♥",
-    "6♥",
-    "7♥",
-    "8♥",
-    "9♥",
-    "10♥",
-    "J♥",
-    "Q♥",
-    "K♥",
-    "A♥",
-  ],
+  cards: [],
   minimumBet: 5,
   maximumBet: 50,
   moneyInPlay: 0,
@@ -66,11 +66,114 @@ const gameState = {
   dealerValue: 0,
   playerAceCounter: 0,
   dealerAceCounter: 0,
+  numDecks: 1,
 };
 
 // Game Rendering
 function renderHTML() {
   const body = document.getElementsByTagName("body");
+
+  // Rendering HTML for Settings
+  const options = document.createElement("div");
+  options.setAttribute("id", "options");
+  options.innerHTML = "Settings";
+  const moneyOptionLabel = document.createElement("label");
+  moneyOptionLabel.setAttribute("for", "money_option");
+  moneyOptionLabel.innerHTML = "Starting Money";
+  const moneyOption = document.createElement("input");
+  moneyOption.setAttribute("id", "money_option");
+  moneyOption.setAttribute("type", "range");
+  moneyOption.setAttribute("name", "money_option");
+  moneyOption.setAttribute("value", "100");
+  moneyOption.setAttribute("min", "25");
+  moneyOption.setAttribute("max", "500");
+  moneyOption.setAttribute("step", "5");
+  moneyOption.setAttribute(
+    "oninput",
+    "money_option_disp.value = money_option.value"
+  );
+  const moneyOptionOutput = document.createElement("output");
+  moneyOptionOutput.setAttribute("id", "money_option_disp");
+  moneyOptionOutput.innerHTML = "100";
+
+  options.appendChild(moneyOptionLabel);
+  options.appendChild(moneyOptionOutput);
+  options.appendChild(moneyOption);
+
+  const numDecksOptionLabel = document.createElement("label");
+  numDecksOptionLabel.setAttribute("for", "num_decks");
+  numDecksOptionLabel.innerHTML = "Number of Decks";
+  const numDecksOption = document.createElement("input");
+  numDecksOption.setAttribute("id", "num_decks_option");
+  numDecksOption.setAttribute("type", "range");
+  numDecksOption.setAttribute("name", "num_decks_option");
+  numDecksOption.setAttribute("value", "1");
+  numDecksOption.setAttribute("min", "1");
+  numDecksOption.setAttribute("max", "6");
+  numDecksOption.setAttribute(
+    "oninput",
+    "num_decks_option_disp.value = num_decks_option.value"
+  );
+  const numDecksOptionOutput = document.createElement("output");
+  numDecksOptionOutput.setAttribute("id", "num_decks_option_disp");
+  numDecksOptionOutput.innerHTML = "1";
+
+  options.appendChild(numDecksOptionLabel);
+  options.appendChild(numDecksOptionOutput);
+  options.appendChild(numDecksOption);
+
+  const minBetOptionLabel = document.createElement("label");
+  minBetOptionLabel.setAttribute("for", "min_bet");
+  minBetOptionLabel.innerHTML = "Minimum Bet";
+  const minBetOption = document.createElement("input");
+  minBetOption.setAttribute("id", "min_bet_option");
+  minBetOption.setAttribute("type", "range");
+  minBetOption.setAttribute("name", "min_bet_option");
+  minBetOption.setAttribute("value", "1");
+  minBetOption.setAttribute("min", "5");
+  minBetOption.setAttribute("max", "50");
+  minBetOption.setAttribute("step", "5");
+  minBetOption.setAttribute(
+    "oninput",
+    "min_bet_option_disp.value = min_bet_option.value"
+  );
+  const minBetOptionOutput = document.createElement("output");
+  minBetOptionOutput.setAttribute("id", "min_bet_option_disp");
+  minBetOptionOutput.innerHTML = "5";
+
+  options.appendChild(minBetOptionLabel);
+  options.appendChild(minBetOptionOutput);
+  options.appendChild(minBetOption);
+
+  const maxBetOptionLabel = document.createElement("label");
+  maxBetOptionLabel.setAttribute("for", "max_bet");
+  maxBetOptionLabel.innerHTML = "Maximum Bet";
+  const maxBetOption = document.createElement("input");
+  maxBetOption.setAttribute("id", "max_bet_option");
+  maxBetOption.setAttribute("type", "range");
+  maxBetOption.setAttribute("name", "max_bet_option");
+  maxBetOption.setAttribute("value", "50");
+  maxBetOption.setAttribute("min", "50");
+  maxBetOption.setAttribute("max", "500");
+  maxBetOption.setAttribute("step", "5");
+  maxBetOption.setAttribute(
+    "oninput",
+    "max_bet_option_disp.value = max_bet_option.value"
+  );
+  const maxBetOptionOutput = document.createElement("output");
+  maxBetOptionOutput.setAttribute("id", "max_bet_option_disp");
+  maxBetOptionOutput.innerHTML = "50";
+
+  options.appendChild(maxBetOptionLabel);
+  options.appendChild(maxBetOptionOutput);
+  options.appendChild(maxBetOption);
+
+  const optionsSubmitButton = document.createElement("button");
+  optionsSubmitButton.setAttribute("id", "options-submit");
+  optionsSubmitButton.innerHTML = "Apply Settings";
+
+  options.appendChild(optionsSubmitButton);
+
   const gameBoard = document.createElement("div");
   gameBoard.setAttribute("id", "game-board");
   const gameTitle = document.createElement("h1");
@@ -159,6 +262,7 @@ function renderHTML() {
   gameBoard.appendChild(playerChoices);
   gameBoard.appendChild(cardValuesDisplay);
   body[0].appendChild(gameBoard);
+  body[0].appendChild(options);
 }
 
 renderHTML();
@@ -180,6 +284,11 @@ const yes = document.getElementById("yes");
 const no = document.getElementById("no");
 const playerValueDisplay = document.getElementById("player-value-display");
 const dealerValueDisplay = document.getElementById("dealer-value-display");
+const optionsSubmitButton = document.getElementById("options-submit");
+const optionsMoney = document.getElementById("money_option");
+const optionsNumDecks = document.getElementById("num_decks_option");
+const optionsMinBet = document.getElementById("min_bet_option");
+const optionsMaxBet = document.getElementById("max_bet_option");
 
 // Event Listeners
 five.addEventListener("click", addFive);
@@ -193,6 +302,7 @@ stay.addEventListener("click", playerStay);
 double.addEventListener("click", doubleDown);
 yes.addEventListener("click", insuranceYes);
 no.addEventListener("click", insuranceNo);
+optionsSubmitButton.addEventListener("click", submitOptions);
 
 // Game Functionality
 
@@ -243,8 +353,8 @@ function addTwentyFive() {
 
 function maxBet() {
   if (
-    gameState.moneyInPlay < 50 &&
-    50 - gameState.moneyInPlay <= gameState.money
+    gameState.moneyInPlay < gameState.maximumBet &&
+    gameState.maximumBet - gameState.moneyInPlay <= gameState.money
   ) {
     let subtractFromMoney = 50 - gameState.moneyInPlay;
     gameState.money -= subtractFromMoney;
@@ -268,68 +378,24 @@ function clearBet() {
 }
 
 function gameStart() {
-  if (gameState.moneyInPlay) {
+  if (gameState.moneyInPlay >= gameState.minimumBet) {
     changeButtonsForPlay();
     if (gameState.cards.length <= 10) {
-      gameState.cards = [
-        "2♠",
-        "3♠",
-        "4♠",
-        "5♠",
-        "6♠",
-        "7♠",
-        "8♠",
-        "9♠",
-        "10♠",
-        "J♠",
-        "Q♠",
-        "K♠",
-        "A♠",
-        "2♣",
-        "3♣",
-        "4♣",
-        "5♣",
-        "6♣",
-        "7♣",
-        "8♣",
-        "9♣",
-        "10♣",
-        "J♣",
-        "Q♣",
-        "K♣",
-        "A♣",
-        "2♦",
-        "3♦",
-        "4♦",
-        "5♦",
-        "6♦",
-        "7♦",
-        "8♦",
-        "9♦",
-        "10♦",
-        "J♦",
-        "Q♦",
-        "K♦",
-        "A♦",
-        "2♥",
-        "3♥",
-        "4♥",
-        "5♥",
-        "6♥",
-        "7♥",
-        "8♥",
-        "9♥",
-        "10♥",
-        "J♥",
-        "Q♥",
-        "K♥",
-        "A♥",
-      ];
+      deckReload();
     }
     dealCards();
     checkDealerCardValue();
     checkPlayerCardValue();
     checkBlackjack();
+  }
+}
+
+function deckReload() {
+  gameState.cards = [];
+  for (let i = 0; i < gameState.numDecks; i++) {
+    for (let card of cardsArray) {
+      gameState.cards.push(card);
+    }
   }
 }
 
@@ -341,6 +407,7 @@ function changeButtonsForPlay() {
   maxButton.style.display = "none";
   clear.style.display = "none";
   startGame.style.display = "none";
+  optionsSubmitButton.style.display = "none";
   hit.style.removeProperty("display");
   stay.style.removeProperty("display");
   if (gameState.money >= gameState.moneyInPlay) {
@@ -355,6 +422,7 @@ function changeButtonsForBetting() {
   maxButton.style.removeProperty("display");
   clear.style.removeProperty("display");
   startGame.style.removeProperty("display");
+  optionsSubmitButton.style.removeProperty("display");
 
   hit.style.display = "none";
   stay.style.display = "none";
@@ -705,6 +773,7 @@ function insuranceNo() {
     dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
     gameState.moneyInPlay *= 2;
     gameState.money -= gameState.moneyInPlay;
+    moneyDisplay.innerHTML = `Money $${gameState.money}`;
     gameLost();
   } else {
     moneyInPlay.innerHTML = gameState.moneyInPlay;
@@ -731,4 +800,23 @@ function checkBlackjack() {
     gameState.moneyInPlay = Math.ceil(gameState.moneyInPlay * 1.25);
     gameWon();
   }
+}
+
+function submitOptions() {
+  console.log(optionsMoney.value);
+  gameState.money = optionsMoney.value;
+  gameState.minimumBet = optionsMinBet.value;
+  gameState.maximumBet = optionsMaxBet.value;
+  gameState.numDecks = optionsNumDecks.value;
+  gameState.moneyInPlay = 0;
+  moneyDisplay.innerHTML = `Money: $${gameState.money}`;
+  moneyInPlay.innerHTML = "";
+  moneyInPlay.style.removeProperty("background-image");
+  console.log(gameState.money);
+
+  console.log(optionsMinBet.value);
+  console.log(optionsMaxBet.value);
+
+  deckReload();
+  console.log(gameState.cards);
 }
