@@ -24,7 +24,7 @@ const gameState = {
     "6♣",
     "7♣",
     "8♣",
-    "9C♣",
+    "9♣",
     "10♣",
     "J♣",
     "Q♣",
@@ -113,23 +113,23 @@ function renderHTML() {
   startGame.innerHTML = "Start";
   const hit = document.createElement("button");
   hit.setAttribute("id", "hit");
-  hit.setAttribute("class", "hidden");
+  hit.style.display = "none";
   hit.innerHTML = "Hit";
   const stay = document.createElement("button");
   stay.setAttribute("id", "stay");
-  stay.setAttribute("class", "hidden");
+  stay.style.display = "none";
   stay.innerHTML = "Stay";
   const double = document.createElement("button");
   double.setAttribute("id", "double");
-  double.setAttribute("class", "hidden");
+  double.style.display = "none";
   double.innerHTML = "Double Down";
   const yes = document.createElement("button");
   yes.setAttribute("id", "yes");
-  yes.setAttribute("class", "hidden");
+  yes.style.display = "none";
   yes.innerHTML = "Yes";
   const no = document.createElement("button");
   no.setAttribute("id", "no");
-  no.setAttribute("class", "hidden");
+  no.style.display = "none";
   no.innerHTML = "No";
   playerChoices.appendChild(five);
   playerChoices.appendChild(ten);
@@ -187,6 +187,9 @@ function addFive() {
     gameState.moneyInPlay += 5;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
   }
 }
 
@@ -199,6 +202,9 @@ function addTen() {
     gameState.moneyInPlay += 10;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
   }
 }
 
@@ -211,6 +217,9 @@ function addTwentyFive() {
     gameState.moneyInPlay += 25;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
   }
 }
 
@@ -224,6 +233,9 @@ function maxBet() {
     gameState.moneyInPlay = 50;
     moneyDisplay.innerHTML = `Money: ${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
   }
 }
 
@@ -252,7 +264,7 @@ function gameStart() {
         "6♣",
         "7♣",
         "8♣",
-        "9C♣",
+        "9♣",
         "10♣",
         "J♣",
         "Q♣",
@@ -295,16 +307,30 @@ function gameStart() {
 
 function changeButtonsForPlay() {
   // This will remove the pre-game buttons and add in gameplay buttons
-  five.setAttribute("class", "hidden");
-  ten.setAttribute("class", "hidden");
-  twentyFive.setAttribute("class", "hidden");
-  maxButton.setAttribute("class", "hidden");
-  startGame.setAttribute("class", "hidden");
-  hit.removeAttribute("class");
-  stay.removeAttribute("class");
+  five.style.display = "none";
+  ten.style.display = "none";
+  twentyFive.style.display = "none";
+  maxButton.style.display = "none";
+  startGame.style.display = "none";
+  hit.style.removeProperty("display");
+  stay.style.removeProperty("display");
   if (gameState.money >= gameState.moneyInPlay) {
-    double.removeAttribute("class");
+    double.style.removeProperty("display");
   }
+}
+
+function changeButtonsForBetting() {
+  five.style.removeProperty("display");
+  ten.style.removeProperty("display");
+  twentyFive.style.removeProperty("display");
+  maxButton.style.removeProperty("display");
+  startGame.style.removeProperty("display");
+
+  hit.style.display = "none";
+  stay.style.display = "none";
+  double.style.display = "none";
+  yes.style.display = "none";
+  no.style.display = "none";
 }
 
 function dealCards() {
@@ -320,7 +346,10 @@ function dealCards() {
 
     let suitCheck = card.innerHTML;
 
-    if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+    if (
+      suitCheck[suitCheck.length - 1] === "♥" ||
+      suitCheck[suitCheck.length - 1] === "♦"
+    ) {
       card.style.color = "red";
     }
 
@@ -414,16 +443,19 @@ function checkDealerCardValue() {
       if (gameState.playerValue === 21 && gameState.dealerValue === 21) {
         const dealerHiddenCard = document.getElementById("dealer-hidden-card");
         dealerHiddenCard.innerHTML = gameState.dealerCards[1];
-        yes.setAttribute("class", "hidden");
-        no.setAttribute("class", "hidden");
+        yes.style.display = "none";
+        no.style.display = "none";
         gamePush();
       } else {
-        hit.setAttribute("class", "hidden");
-        stay.setAttribute("class", "hidden");
-        double.setAttribute("class", "hidden");
+        hit.style.display = "none";
+        stay.style.display = "none";
+        double.style.display = "none";
+        moneyInPlay.style.removeProperty("background-image");
+        moneyInPlay.style.removeProperty("height");
+        moneyInPlay.style.removeProperty("width");
         moneyInPlay.innerHTML = "Insurance?";
-        yes.removeAttribute("class");
-        no.removeAttribute("class");
+        yes.style.removeProperty("display");
+        no.style.removeProperty("display");
       }
     }
 
@@ -432,7 +464,7 @@ function checkDealerCardValue() {
 }
 
 function playerHit() {
-  double.setAttribute("class", "hidden");
+  double.style.display = "none";
   let cardChoice = Math.floor(Math.random() * gameState.cards.length);
   const card = document.createElement("div");
   card.setAttribute("class", "card");
@@ -440,7 +472,10 @@ function playerHit() {
   gameState.playerCards.push(gameState.cards[cardChoice]);
 
   let suitCheck = card.innerHTML;
-  if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
     card.style.color = "red";
   }
 
@@ -460,7 +495,10 @@ function dealerHit() {
   gameState.dealerCards.push(gameState.cards[cardChoice]);
 
   let suitCheck = card.innerHTML;
-  if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
     card.style.color = "red";
   }
 
@@ -470,6 +508,15 @@ function dealerHit() {
 
 function playerStay() {
   const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+
+  let suitCheck = gameState.dealerCards[1];
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
+    dealerHiddenCard.style.color = "red";
+  }
+
   dealerHiddenCard.innerHTML = gameState.dealerCards[1];
   while (gameState.dealerValue < 17) {
     dealerHit();
@@ -489,7 +536,7 @@ function playerStay() {
 }
 
 function doubleDown() {
-  double.removeAttribute("class");
+  double.style.removeProperty("display");
   gameState.money -= gameState.moneyInPlay;
   gameState.moneyInPlay *= 2;
 
@@ -508,20 +555,14 @@ function gameWon() {
   gameState.dealerCards = [];
 
   gameState.money += gameState.moneyInPlay * 2;
-  moneyInPlay.innerHTML = `You have won ${gameState.moneyInPlay * 2}!`;
+  moneyInPlay.style.removeProperty("background-image");
+  moneyInPlay.style.removeProperty("height");
+  moneyInPlay.style.removeProperty("width");
+  moneyInPlay.innerHTML = `You have won $${gameState.moneyInPlay * 2}!`;
   gameState.moneyInPlay = 0;
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
-  hit.setAttribute("class", "hidden");
-  stay.setAttribute("class", "hidden");
-  if (double) {
-    double.setAttribute("class", "hidden");
-  }
-  five.removeAttribute("class");
-  ten.removeAttribute("class");
-  twentyFive.removeAttribute("class");
-  maxButton.removeAttribute("class");
-  startGame.removeAttribute("class");
+  changeButtonsForBetting();
 }
 
 function gameLost() {
@@ -529,19 +570,13 @@ function gameLost() {
   gameState.dealerValue = 0;
   gameState.playerCards = [];
   gameState.dealerCards = [];
+  moneyInPlay.style.removeProperty("background-image");
+  moneyInPlay.style.removeProperty("height");
+  moneyInPlay.style.removeProperty("width");
   moneyInPlay.innerHTML = `You have lost $${gameState.moneyInPlay}...`;
   gameState.moneyInPlay = 0;
 
-  hit.setAttribute("class", "hidden");
-  stay.setAttribute("class", "hidden");
-  if (double) {
-    double.setAttribute("class", "hidden");
-  }
-  five.removeAttribute("class");
-  ten.removeAttribute("class");
-  twentyFive.removeAttribute("class");
-  maxButton.removeAttribute("class");
-  startGame.removeAttribute("class");
+  changeButtonsForBetting();
 }
 
 function gamePush() {
@@ -553,26 +588,29 @@ function gamePush() {
 
   gameState.money += gameState.moneyInPlay;
   gameState.moneyInPlay = 0;
+  moneyInPlay.style.removeProperty("background-image");
+  moneyInPlay.style.removeProperty("height");
+  moneyInPlay.style.removeProperty("width");
   moneyInPlay.innerHTML = "Push!";
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
-  hit.setAttribute("class", "hidden");
-  stay.setAttribute("class", "hidden");
-  if (double) {
-    double.setAttribute("class", "hidden");
-  }
-  five.removeAttribute("class");
-  ten.removeAttribute("class");
-  twentyFive.removeAttribute("class");
-  maxButton.removeAttribute("class");
-  startGame.removeAttribute("class");
+  changeButtonsForBetting();
 }
 
 function insuranceYes() {
   if (gameState.dealerValue === 21) {
-    yes.setAttribute("class", "hidden");
-    no.setAttribute("class", "hidden");
+    yes.style.display = "none";
+    no.style.display = "none";
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+    let suitCheck = gameState.dealerCards[1];
+
+    if (
+      suitCheck[suitCheck.length - 1] === "♥" ||
+      suitCheck[suitCheck.length - 1] === "♦"
+    ) {
+      card.style.color = "red";
+    }
+
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
     gameState.moneyInPlay *= 2;
     gameWon();
@@ -580,20 +618,21 @@ function insuranceYes() {
     gameState.money -= gameState.moneyInPlay;
     moneyInPlay.innerHTML = gameState.moneyInPlay;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
-    yes.setAttribute("class", "hidden");
-    no.setAttribute("class", "hidden");
-    hit.removeAttribute("class");
-    stay.removeAttribute("class");
+    moneyDisplay.style.backgroundImage = "url('./assets/chip.png)";
+    yes.style.display = "none";
+    no.style.display = "none";
+    hit.style.removeProperty("display");
+    stay.style.removeProperty("display");
     if (gameState.money >= gameState.moneyInPlay) {
-      double.removeAttribute("class");
+      double.style.removeProperty("display");
     }
   }
 }
 
 function insuranceNo() {
   if (gameState.dealerValue === 21) {
-    yes.setAttribute("class", "hidden");
-    no.setAttribute("class", "hidden");
+    yes.style.display = "none";
+    no.style.display = "none";
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
     gameState.moneyInPlay *= 2;
@@ -602,12 +641,12 @@ function insuranceNo() {
   } else {
     moneyInPlay.innerHTML = gameState.moneyInPlay;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
-    yes.setAttribute("class", "hidden");
-    no.setAttribute("class", "hidden");
-    hit.removeAttribute("class");
-    stay.removeAttribute("class");
+    yes.style.display = "none";
+    no.style.display = "none";
+    hit.style.removeProperty("display");
+    stay.style.removeProperty("display");
     if (gameState.money >= gameState.moneyInPlay) {
-      double.removeAttribute("class");
+      double.style.removeProperty("display");
     }
   }
 }
