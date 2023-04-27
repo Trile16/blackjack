@@ -358,7 +358,9 @@ function dealCards() {
       playerSeat.appendChild(card);
     } else if (i === 3) {
       card.removeAttribute("style");
-      card.innerHTML = "?";
+      card.style.backgroundImage = "url('./assets/hidden-card.jpg')";
+      card.style.backgroundSize = "100% 100%";
+      card.innerHTML = "";
       card.setAttribute("id", "dealer-hidden-card");
       gameState.dealerCards.push(gameState.cards[cardChoice]);
       dealerSeat.appendChild(card);
@@ -508,6 +510,7 @@ function dealerHit() {
 
 function playerStay() {
   const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+  dealerHiddenCard.style.removeProperty("background-image");
 
   let suitCheck = gameState.dealerCards[1];
   if (
