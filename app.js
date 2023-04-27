@@ -131,7 +131,7 @@ function renderHTML() {
   minBetOption.setAttribute("name", "min_bet_option");
   minBetOption.setAttribute("value", "1");
   minBetOption.setAttribute("min", "5");
-  minBetOption.setAttribute("max", "50");
+  minBetOption.setAttribute("max", "25");
   minBetOption.setAttribute("step", "5");
   minBetOption.setAttribute(
     "oninput",
