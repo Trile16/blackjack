@@ -61,12 +61,16 @@ const gameState = {
   maximumBet: 50,
   moneyInPlay: 0,
   playerCards: [],
+  splitArray: [],
   dealerCards: [],
   playerValue: 0,
+  playerSplitValue: 0,
   dealerValue: 0,
   playerAceCounter: 0,
+  playerSplitAceCounter: 0,
   dealerAceCounter: 0,
   numDecks: 1,
+  isSplit: false,
 };
 
 // Game Rendering
@@ -155,7 +159,7 @@ function renderHTML() {
   maxBetOption.setAttribute("value", "50");
   maxBetOption.setAttribute("min", "50");
   maxBetOption.setAttribute("max", "500");
-  maxBetOption.setAttribute("step", "5");
+  maxBetOption.setAttribute("step", "25");
   maxBetOption.setAttribute(
     "oninput",
     "max_bet_option_disp.value = max_bet_option.value"
@@ -173,6 +177,8 @@ function renderHTML() {
   optionsSubmitButton.innerHTML = "Apply Settings";
 
   options.appendChild(optionsSubmitButton);
+
+  // Rendering HTML for Game Board
 
   const gameBoard = document.createElement("div");
   gameBoard.setAttribute("id", "game-board");
@@ -192,6 +198,11 @@ function renderHTML() {
   playerSeat.setAttribute("id", "playerSeat");
   playerSeat.setAttribute("class", "card-display");
   table.appendChild(playerSeat);
+  const playerSplitSeat = document.createElement("div");
+  playerSplitSeat.setAttribute("id", "playerSplitSeat");
+  playerSplitSeat.setAttribute("class", "card-display");
+  playerSplitSeat.style.display = "none";
+  table.appendChild(playerSplitSeat);
   const money = document.createElement("div");
   money.setAttribute("id", "money-display");
   money.innerHTML = `Money: $${gameState.money}`;
@@ -207,44 +218,77 @@ function renderHTML() {
   cardValuesDisplay.appendChild(dealerValueDisplay);
   const playerChoices = document.createElement("span");
   playerChoices.setAttribute("id", "player-choice");
+
   const five = document.createElement("button");
   five.setAttribute("id", "five");
   five.innerHTML = "5";
+
   const ten = document.createElement("button");
   ten.setAttribute("id", "ten");
   ten.innerHTML = "10";
+
   const maxBet = document.createElement("button");
   maxBet.setAttribute("id", "max-bet");
   maxBet.innerHTML = "Max Bet";
+
   const twentyFive = document.createElement("button");
   twentyFive.setAttribute("id", "twenty-five");
   twentyFive.innerHTML = "25";
+
   const clear = document.createElement("button");
   clear.setAttribute("id", "clear-bet");
   clear.innerHTML = "Clear Bet";
+
   const startGame = document.createElement("button");
   startGame.setAttribute("id", "game-start");
   startGame.innerHTML = "Start";
+
   const hit = document.createElement("button");
   hit.setAttribute("id", "hit");
   hit.style.display = "none";
   hit.innerHTML = "Hit";
+
   const stay = document.createElement("button");
   stay.setAttribute("id", "stay");
   stay.style.display = "none";
   stay.innerHTML = "Stay";
+
   const double = document.createElement("button");
   double.setAttribute("id", "double");
   double.style.display = "none";
   double.innerHTML = "Double Down";
+
+  const hitSplit = document.createElement("button");
+  hitSplit.setAttribute("id", "hit-2");
+  hitSplit.style.display = "none";
+  hitSplit.innerHTML = "Hit";
+
+  const staySplit = document.createElement("button");
+  staySplit.setAttribute("id", "stay-2");
+  staySplit.style.display = "none";
+  staySplit.innerHTML = "Stay";
+
+  const doubleSplit = document.createElement("button");
+  doubleSplit.setAttribute("id", "double-2");
+  doubleSplit.style.display = "none";
+  doubleSplit.innerHTML = "Double Down";
+
+  const split = document.createElement("button");
+  split.setAttribute("id", "split");
+  split.style.display = "none";
+  split.innerHTML = "Split";
+
   const yes = document.createElement("button");
   yes.setAttribute("id", "yes");
   yes.style.display = "none";
   yes.innerHTML = "Yes";
+
   const no = document.createElement("button");
   no.setAttribute("id", "no");
   no.style.display = "none";
   no.innerHTML = "No";
+
+  // Append children to body
   playerChoices.appendChild(five);
   playerChoices.appendChild(ten);
   playerChoices.appendChild(twentyFive);
@@ -254,6 +298,10 @@ function renderHTML() {
   playerChoices.appendChild(hit);
   playerChoices.appendChild(stay);
   playerChoices.appendChild(double);
+  playerChoices.appendChild(hitSplit);
+  playerChoices.appendChild(staySplit);
+  playerChoices.appendChild(doubleSplit);
+  playerChoices.appendChild(split);
   playerChoices.appendChild(yes);
   playerChoices.appendChild(no);
   gameBoard.appendChild(gameTitle);
@@ -280,6 +328,10 @@ const playerChoices = document.getElementById("player-choice");
 const hit = document.getElementById("hit");
 const stay = document.getElementById("stay");
 const double = document.getElementById("double");
+const hitSplit = document.getElementById("hit-2");
+const staySplit = document.getElementById("stay-2");
+const doubleSplit = document.getElementById("double-2");
+const split = document.getElementById("split");
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
 const playerValueDisplay = document.getElementById("player-value-display");
@@ -300,6 +352,9 @@ startGame.addEventListener("click", gameStart);
 hit.addEventListener("click", playerHit);
 stay.addEventListener("click", playerStay);
 double.addEventListener("click", doubleDown);
+split.addEventListener("click", splitHand);
+hitSplit.addEventListener("click", playerSplitHit);
+staySplit.addEventListener("click", playerSplitStay);
 yes.addEventListener("click", insuranceYes);
 no.addEventListener("click", insuranceNo);
 optionsSubmitButton.addEventListener("click", submitOptions);
@@ -425,6 +480,23 @@ function changeButtonsForPlay() {
   }
 }
 
+function changeButtonsForSplitPlay() {
+  // This will add buttons that will function with the split hand
+  five.style.display = "none";
+  ten.style.display = "none";
+  twentyFive.style.display = "none";
+  maxButton.style.display = "none";
+  clear.style.display = "none";
+  startGame.style.display = "none";
+  optionsSubmitButton.style.display = "none";
+  hit.style.display = "none";
+  stay.style.display = "none";
+  double.style.display = "none";
+
+  hitSplit.style.removeProperty("display");
+  staySplit.style.removeProperty("display");
+}
+
 function changeButtonsForBetting() {
   five.style.removeProperty("display");
   ten.style.removeProperty("display");
@@ -437,6 +509,10 @@ function changeButtonsForBetting() {
   hit.style.display = "none";
   stay.style.display = "none";
   double.style.display = "none";
+  split.style.display = "none";
+  hitSplit.style.display = "none";
+  staySplit.style.display = "none";
+  doubleSplit.style.display = "none";
   yes.style.display = "none";
   no.style.display = "none";
 }
@@ -482,6 +558,10 @@ function dealCards() {
     console.log("dealer cards: ", gameState.dealerCards);
     console.log("cards: ", gameState.cards);
   }
+
+  if (gameState.playerCards[0][0] === gameState.playerCards[1][0]) {
+    split.style.removeProperty("display");
+  }
 }
 
 function checkPlayerCardValue() {
@@ -509,11 +589,46 @@ function checkPlayerCardValue() {
       gameState.playerAceCounter--;
     }
 
-    gameState.playerAceCounter = 0;
-
     console.log("player value: ", gameState.playerValue);
     playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}`;
   }
+
+  gameState.playerAceCounter = 0;
+}
+
+function checkPlayerSplitCardValue() {
+  //Grab the value for the player with player card array
+  gameState.playerSplitValue = 0;
+
+  for (let card of gameState.splitArray) {
+    console.log(card[0]);
+    if (card[0] === "A") {
+      gameState.playerSplitAceCounter++;
+      gameState.playerSplitValue += 11;
+    } else if (
+      card[0] === "J" ||
+      card[0] === "Q" ||
+      card[0] === "K" ||
+      card[0] === "1"
+    ) {
+      gameState.playerSplitValue += 10;
+    } else {
+      gameState.playerSplitValue += parseInt(card[0]);
+    }
+
+    while (
+      gameState.playerSplitValue > 21 &&
+      gameState.playerSplitAceCounter > 0
+    ) {
+      gameState.playerSplitValue -= 10;
+      gameState.playerSplitAceCounter--;
+    }
+
+    console.log("player value: ", gameState.playerSplitValue);
+    playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}, ${gameState.playerSplitValue}`;
+  }
+
+  gameState.playerSplitAceCounter = 0;
 }
 
 function checkDealerCardValue() {
@@ -543,8 +658,6 @@ function checkDealerCardValue() {
       gameState.dealerAceCounter--;
     }
 
-    gameState.dealerAceCounter = 0;
-
     if (
       gameState.dealerCards.length === 2 &&
       gameState.dealerCards[0][0] === "A" &&
@@ -561,6 +674,7 @@ function checkDealerCardValue() {
         hit.style.display = "none";
         stay.style.display = "none";
         double.style.display = "none";
+        split.style.display = "none";
         moneyInPlay.style.removeProperty("background-image");
         moneyInPlay.style.removeProperty("height");
         moneyInPlay.style.removeProperty("width");
@@ -590,10 +704,13 @@ function checkDealerCardValue() {
       dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
     }
   }
+
+  gameState.dealerAceCounter = 0;
 }
 
 function playerHit() {
-  double.style.display = "none";
+  if (gameState.playerCards.length > 1 || gameState.splitArray.length > 1)
+    double.style.display = "none";
   let cardChoice = Math.floor(Math.random() * gameState.cards.length);
   const card = document.createElement("div");
   card.setAttribute("class", "card");
@@ -611,8 +728,38 @@ function playerHit() {
   playerSeat.appendChild(card);
   gameState.cards.splice(cardChoice, 1);
   checkPlayerCardValue();
-  if (gameState.playerValue > 21) {
+  if (gameState.playerValue > 21 && gameState.isSplit === false) {
     gameLost();
+  } else if (gameState.playerValue > 21 && gameState.isSplit === true) {
+    checkPlayerSplitCardValue();
+    playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}, ${gameState.playerSplitValue}`;
+    changeButtonsForSplitPlay();
+  }
+}
+
+function playerSplitHit() {
+  double.style.display = "none";
+  let cardChoice = Math.floor(Math.random() * gameState.cards.length);
+  const card = document.createElement("div");
+  card.setAttribute("class", "card");
+  card.innerHTML = gameState.cards[cardChoice];
+  gameState.splitArray.push(gameState.cards[cardChoice]);
+
+  let suitCheck = card.innerHTML;
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
+    card.style.color = "red";
+  }
+
+  playerSplitSeat.appendChild(card);
+  gameState.cards.splice(cardChoice, 1);
+  checkPlayerSplitCardValue();
+  if (gameState.playerSplitValue > 21 && gameState.playerValue > 21) {
+    gameLost();
+  } else if (gameState.playerSplitValue > 21) {
+    checkPlayerCardValue();
   }
 }
 
@@ -636,6 +783,43 @@ function dealerHit() {
 }
 
 function playerStay() {
+  if (gameState.isSplit === false) {
+    const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+    dealerHiddenCard.style.removeProperty("background-image");
+
+    let suitCheck = gameState.dealerCards[1];
+    if (
+      suitCheck[suitCheck.length - 1] === "♥" ||
+      suitCheck[suitCheck.length - 1] === "♦"
+    ) {
+      dealerHiddenCard.style.color = "red";
+    }
+
+    dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+    dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
+    while (gameState.dealerValue < 17) {
+      dealerHit();
+      checkDealerCardValue();
+    }
+    if (gameState.dealerValue > 21) {
+      gameWon();
+    } else if (gameState.dealerValue >= 17) {
+      if (gameState.dealerValue < gameState.playerValue) {
+        gameWon();
+      } else if (gameState.dealerValue > gameState.playerValue) {
+        gameLost();
+      } else if (gameState.dealerValue === gameState.playerValue) {
+        gamePush();
+      }
+    }
+  } else {
+    checkPlayerSplitCardValue();
+    playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}, ${gameState.playerSplitValue}`;
+    changeButtonsForSplitPlay();
+  }
+}
+
+function playerSplitStay() {
   const dealerHiddenCard = document.getElementById("dealer-hidden-card");
   dealerHiddenCard.style.removeProperty("background-image");
 
@@ -649,25 +833,11 @@ function playerStay() {
 
   dealerHiddenCard.innerHTML = gameState.dealerCards[1];
   dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
-  while (gameState.dealerValue < 17) {
-    dealerHit();
-    checkDealerCardValue();
-  }
-  if (gameState.dealerValue > 21) {
-    gameWon();
-  } else if (gameState.dealerValue >= 17) {
-    if (gameState.dealerValue < gameState.playerValue) {
-      gameWon();
-    } else if (gameState.dealerValue > gameState.playerValue) {
-      gameLost();
-    } else if (gameState.dealerValue === gameState.playerValue) {
-      gamePush();
-    }
-  }
+
+  checkSplitHandWin();
 }
 
 function doubleDown() {
-  double.style.removeProperty("display");
   gameState.money -= gameState.moneyInPlay;
   gameState.moneyInPlay *= 2;
 
@@ -676,6 +846,98 @@ function doubleDown() {
   playerHit();
   if (gameState.playerValue) {
     playerStay();
+  }
+}
+
+function splitHand() {
+  gameState.isSplit = true;
+
+  split.style.display = "none";
+  doubleSplit.style.display = "none";
+
+  gameState.money -= gameState.moneyInPlay;
+  gameState.moneyInPlay *= 2;
+
+  let secondCard = gameState.playerCards.pop();
+  playerSeat.removeChild(playerSeat.lastChild);
+
+  let card = document.createElement("div");
+  card.setAttribute("class", "card");
+  card.innerHTML = secondCard;
+  gameState.splitArray.push(secondCard);
+
+  let suitCheck = card.innerHTML;
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
+    card.style.color = "red";
+  }
+
+  playerSplitSeat.style.removeProperty("display");
+  playerSplitSeat.appendChild(card);
+
+  playerHit();
+}
+
+function checkSplitHandWin() {
+  while (gameState.dealerValue < 17) {
+    dealerHit();
+    checkDealerCardValue();
+  }
+  if (gameState.dealerValue > 21) {
+    if (gameState.playerValue > 21 && gameState.playerSplitValue < 21) {
+      gamePush();
+    } else if (gameState.playerValue < 21 && gameState.playerSplitValue > 21) {
+      gamePush();
+    } else {
+      gameWon();
+    }
+  } else if (gameState.dealerValue >= 17) {
+    if (
+      gameState.dealerValue < gameState.playerValue &&
+      gameState.playerValue <= 21 &&
+      gameState.playerSplitValue > gameState.dealerValue
+    ) {
+      gameWon();
+    } else if (
+      gameState.dealerValue < gameState.playerValue &&
+      gameState.playerValue <= 21 &&
+      gameState.playerSplitValue < gameState.dealerValue
+    ) {
+      gamePush();
+    } else if (
+      gameState.dealerValue > gameState.playerValue &&
+      gameState.playerSplitValue < gameState.dealerValue
+    ) {
+      gamePush();
+    } else if (
+      gameState.dealerValue === gameState.playerValue &&
+      gameState.dealerValue < gameState.playerSplitValue
+    ) {
+      gameState.moneyInPlay /= 1.5;
+      gameWon();
+    } else if (
+      gameState.dealerValue === gameState.playerSplitValue &&
+      gameState.dealerValue < gameState.playerValue
+    ) {
+      gameState.moneyInPlay /= 1.5;
+      gameWon();
+    } else if (
+      gameState.dealerValue === gameState.playerValue &&
+      gameState.dealerValue > gameState.playerSplitValue
+    ) {
+      gameState.money += gameState.moneyInPlay / 4;
+      gameLost();
+    } else if (
+      gameState.dealerValue === gameState.playerSplitValue &&
+      gameState.dealerValue > gameState.playerValue
+    ) {
+      gameState.money += gameState.moneyInPlay / 4;
+      gameLost();
+    } else {
+      gameLost();
+    }
   }
 }
 
@@ -694,6 +956,7 @@ function gameWon() {
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
   changeButtonsForBetting();
+  clearSplitVariables();
 }
 
 function gameLost() {
@@ -708,6 +971,7 @@ function gameLost() {
   gameState.moneyInPlay = 0;
 
   changeButtonsForBetting();
+  clearSplitVariables();
 }
 
 function gamePush() {
@@ -726,6 +990,7 @@ function gamePush() {
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
   changeButtonsForBetting();
+  clearSplitVariables();
 }
 
 function insuranceYes() {
@@ -843,4 +1108,11 @@ function clearTable() {
 
   playerValueDisplay.innerHTML = "Player: ";
   dealerValueDisplay.innerHTML = "Dealer: ";
+}
+
+function clearSplitVariables() {
+  gameState.splitArray = [];
+  gameState.playerSplitAceCounter = 0;
+  gameState.playerSplitValue = 0;
+  gameState.isSplit = false;
 }
