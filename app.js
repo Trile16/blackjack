@@ -776,8 +776,6 @@ function insuranceNo() {
     }
 
     dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
-    gameState.moneyInPlay *= 2;
-    gameState.money -= gameState.moneyInPlay;
     moneyDisplay.innerHTML = `Money $${gameState.money}`;
     gameLost();
   } else {
