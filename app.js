@@ -116,6 +116,9 @@ function renderHTML() {
   const twentyFive = document.createElement("button");
   twentyFive.setAttribute("id", "twenty-five");
   twentyFive.innerHTML = "25";
+  const clear = document.createElement("button");
+  clear.setAttribute("id", "clear-bet");
+  clear.innerHTML = "Clear Bet";
   const startGame = document.createElement("button");
   startGame.setAttribute("id", "game-start");
   startGame.innerHTML = "Start";
@@ -143,6 +146,7 @@ function renderHTML() {
   playerChoices.appendChild(ten);
   playerChoices.appendChild(twentyFive);
   playerChoices.appendChild(maxBet);
+  playerChoices.appendChild(clear);
   playerChoices.appendChild(startGame);
   playerChoices.appendChild(hit);
   playerChoices.appendChild(stay);
@@ -164,6 +168,7 @@ const five = document.getElementById("five");
 const ten = document.getElementById("ten");
 const twentyFive = document.getElementById("twenty-five");
 const maxButton = document.getElementById("max-bet");
+const clear = document.getElementById("clear-bet");
 const moneyDisplay = document.getElementById("money-display");
 const moneyInPlay = document.getElementById("money-in-play");
 const startGame = document.getElementById("game-start");
@@ -180,6 +185,7 @@ const dealerValueDisplay = document.getElementById("dealer-value-display");
 five.addEventListener("click", addFive);
 ten.addEventListener("click", addTen);
 twentyFive.addEventListener("click", addTwentyFive);
+clear.addEventListener("click", clearBet);
 maxButton.addEventListener("click", maxBet);
 startGame.addEventListener("click", gameStart);
 hit.addEventListener("click", playerHit);
@@ -243,12 +249,22 @@ function maxBet() {
     let subtractFromMoney = 50 - gameState.moneyInPlay;
     gameState.money -= subtractFromMoney;
     gameState.moneyInPlay = 50;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
     moneyInPlay.style.height = "3rem";
     moneyInPlay.style.width = "3rem";
   }
+}
+
+function clearBet() {
+  gameState.money += gameState.moneyInPlay;
+  gameState.moneyInPlay = 0;
+  moneyDisplay.innerHTML = `Money: $${gameState.money}`;
+  moneyInPlay.innerHTML = "";
+  moneyInPlay.style.removeProperty("background-image");
+  moneyInPlay.style.removeProperty("height");
+  moneyInPlay.style.removeProperty("width");
 }
 
 function gameStart() {
@@ -323,6 +339,7 @@ function changeButtonsForPlay() {
   ten.style.display = "none";
   twentyFive.style.display = "none";
   maxButton.style.display = "none";
+  clear.style.display = "none";
   startGame.style.display = "none";
   hit.style.removeProperty("display");
   stay.style.removeProperty("display");
@@ -336,6 +353,7 @@ function changeButtonsForBetting() {
   ten.style.removeProperty("display");
   twentyFive.style.removeProperty("display");
   maxButton.style.removeProperty("display");
+  clear.style.removeProperty("display");
   startGame.style.removeProperty("display");
 
   hit.style.display = "none";
