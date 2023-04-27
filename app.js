@@ -311,6 +311,7 @@ function addFive() {
     gameState.money >= 5 &&
     gameState.maximumBet >= gameState.moneyInPlay + 5
   ) {
+    clearTable();
     gameState.money -= 5;
     gameState.moneyInPlay += 5;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
@@ -326,6 +327,7 @@ function addTen() {
     gameState.money >= 10 &&
     gameState.maximumBet >= gameState.moneyInPlay + 10
   ) {
+    clearTable();
     gameState.money -= 10;
     gameState.moneyInPlay += 10;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
@@ -341,6 +343,7 @@ function addTwentyFive() {
     gameState.money >= 25 &&
     gameState.maximumBet >= gameState.moneyInPlay + 25
   ) {
+    clearTable();
     gameState.money -= 25;
     gameState.moneyInPlay += 25;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
@@ -356,6 +359,7 @@ function maxBet() {
     gameState.moneyInPlay < gameState.maximumBet &&
     gameState.maximumBet - gameState.moneyInPlay <= gameState.money
   ) {
+    clearTable();
     let subtractFromMoney = gameState.maximumBet - gameState.moneyInPlay;
     gameState.money -= subtractFromMoney;
     gameState.moneyInPlay = gameState.maximumBet;
@@ -368,6 +372,7 @@ function maxBet() {
 }
 
 function clearBet() {
+  clearTable();
   console.log(gameState.money);
   console.log(gameState.moneyInPlay);
   let returnMoney = gameState.moneyInPlay;
@@ -815,13 +820,19 @@ function submitOptions() {
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
   moneyInPlay.innerHTML = "";
   moneyInPlay.style.removeProperty("background-image");
-  playerValueDisplay.innerHTML = "Player: ";
-  dealerValueDisplay.innerHTML = "Dealer: ";
+
   console.log(gameState.money);
 
   console.log(optionsMinBet.value);
   console.log(optionsMaxBet.value);
 
+  clearTable();
+
+  deckReload();
+  console.log(gameState.cards);
+}
+
+function clearTable() {
   while (dealerSeat.hasChildNodes()) {
     dealerSeat.removeChild(dealerSeat.firstChild);
   }
@@ -830,6 +841,6 @@ function submitOptions() {
     playerSeat.removeChild(playerSeat.firstChild);
   }
 
-  deckReload();
-  console.log(gameState.cards);
+  playerValueDisplay.innerHTML = "Player: ";
+  dealerValueDisplay.innerHTML = "Dealer: ";
 }
