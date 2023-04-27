@@ -68,11 +68,9 @@ const gameState = {
   dealerAceCounter: 0,
 };
 
-// Document Object Model
-const body = document.getElementsByTagName("body");
-
 // Game Rendering
 function renderHTML() {
+  const body = document.getElementsByTagName("body");
   const gameBoard = document.createElement("div");
   gameBoard.setAttribute("id", "game-board");
   const gameTitle = document.createElement("h1");
@@ -94,6 +92,16 @@ function renderHTML() {
   const money = document.createElement("div");
   money.setAttribute("id", "money-display");
   money.innerHTML = `Money: $${gameState.money}`;
+  const cardValuesDisplay = document.createElement("span");
+  cardValuesDisplay.setAttribute("id", "card-values-display");
+  const playerValueDisplay = document.createElement("div");
+  playerValueDisplay.setAttribute("id", "player-value-display");
+  playerValueDisplay.innerHTML = "Player: ";
+  const dealerValueDisplay = document.createElement("div");
+  dealerValueDisplay.setAttribute("id", "dealer-value-display");
+  dealerValueDisplay.innerHTML = "Dealer: ";
+  cardValuesDisplay.appendChild(playerValueDisplay);
+  cardValuesDisplay.appendChild(dealerValueDisplay);
   const playerChoices = document.createElement("span");
   playerChoices.setAttribute("id", "player-choice");
   const five = document.createElement("button");
@@ -145,12 +153,13 @@ function renderHTML() {
   gameBoard.appendChild(table);
   gameBoard.appendChild(money);
   gameBoard.appendChild(playerChoices);
+  gameBoard.appendChild(cardValuesDisplay);
   body[0].appendChild(gameBoard);
 }
 
 renderHTML();
 
-// Event Listeners
+// DOM
 const five = document.getElementById("five");
 const ten = document.getElementById("ten");
 const twentyFive = document.getElementById("twenty-five");
@@ -164,7 +173,10 @@ const stay = document.getElementById("stay");
 const double = document.getElementById("double");
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
+const playerValueDisplay = document.getElementById("player-value-display");
+const dealerValueDisplay = document.getElementById("dealer-value-display");
 
+// Event Listeners
 five.addEventListener("click", addFive);
 ten.addEventListener("click", addTen);
 twentyFive.addEventListener("click", addTwentyFive);
@@ -404,6 +416,7 @@ function checkPlayerCardValue() {
     gameState.playerAceCounter = 0;
 
     console.log("player value: ", gameState.playerValue);
+    playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}`;
   }
 }
 
@@ -462,6 +475,24 @@ function checkDealerCardValue() {
     }
 
     console.log("dealer value: ", gameState.dealerValue);
+    if (gameState.dealerCards.length === 2) {
+      let cardValueDealer = gameState.dealerCards[0];
+
+      if (
+        cardValueDealer[0] === "J" ||
+        cardValueDealer[0] === "Q" ||
+        cardValueDealer[0] === "K" ||
+        cardValueDealer[0] === "1"
+      ) {
+        dealerValueDisplay.innerHTML = `Dealer: 10`;
+      } else if (cardValueDealer[0] === "A") {
+        dealerValueDisplay.innerHTML = `Dealer: 11`;
+      } else {
+        dealerValueDisplay.innerHTML = `Dealer: ${cardValueDealer[0]}`;
+      }
+    } else {
+      dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
+    }
   }
 }
 
@@ -521,6 +552,7 @@ function playerStay() {
   }
 
   dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+  dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
   while (gameState.dealerValue < 17) {
     dealerHit();
     checkDealerCardValue();
@@ -605,6 +637,7 @@ function insuranceYes() {
     yes.style.display = "none";
     no.style.display = "none";
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+    dealerHiddenCard.style.removeProperty("background-image");
     let suitCheck = gameState.dealerCards[1];
 
     if (
@@ -621,7 +654,9 @@ function insuranceYes() {
     gameState.money -= gameState.moneyInPlay;
     moneyInPlay.innerHTML = gameState.moneyInPlay;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
-    moneyDisplay.style.backgroundImage = "url('./assets/chip.png)";
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
     yes.style.display = "none";
     no.style.display = "none";
     hit.style.removeProperty("display");
@@ -637,12 +672,24 @@ function insuranceNo() {
     yes.style.display = "none";
     no.style.display = "none";
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+    dealerHiddenCard.style.removeProperty("background-image");
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+
+    if (
+      suitCheck[suitCheck.length - 1] === "♥" ||
+      suitCheck[suitCheck.length - 1] === "♦"
+    ) {
+      card.style.color = "red";
+    }
+
     gameState.moneyInPlay *= 2;
     gameState.money -= gameState.moneyInPlay;
     gameLost();
   } else {
     moneyInPlay.innerHTML = gameState.moneyInPlay;
+    moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
+    moneyInPlay.style.height = "3rem";
+    moneyInPlay.style.width = "3rem";
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     yes.style.display = "none";
     no.style.display = "none";
