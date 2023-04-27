@@ -107,16 +107,16 @@ function renderHTML() {
   numDecksOption.setAttribute("id", "num_decks_option");
   numDecksOption.setAttribute("type", "range");
   numDecksOption.setAttribute("name", "num_decks_option");
-  numDecksOption.setAttribute("value", "1");
+  numDecksOption.setAttribute("value", "4");
   numDecksOption.setAttribute("min", "1");
-  numDecksOption.setAttribute("max", "6");
+  numDecksOption.setAttribute("max", "8");
   numDecksOption.setAttribute(
     "oninput",
     "num_decks_option_disp.value = num_decks_option.value"
   );
   const numDecksOptionOutput = document.createElement("output");
   numDecksOptionOutput.setAttribute("id", "num_decks_option_disp");
-  numDecksOptionOutput.innerHTML = "1";
+  numDecksOptionOutput.innerHTML = "4";
 
   options.appendChild(numDecksOptionLabel);
   options.appendChild(numDecksOptionOutput);
@@ -316,8 +316,8 @@ function addFive() {
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
-    moneyInPlay.style.height = "3rem";
-    moneyInPlay.style.width = "3rem";
+    moneyInPlay.style.height = "3.5rem";
+    moneyInPlay.style.width = "3.5rem";
   }
 }
 
@@ -331,8 +331,8 @@ function addTen() {
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
-    moneyInPlay.style.height = "3rem";
-    moneyInPlay.style.width = "3rem";
+    moneyInPlay.style.height = "3.5rem";
+    moneyInPlay.style.width = "3.5rem";
   }
 }
 
@@ -346,8 +346,8 @@ function addTwentyFive() {
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
-    moneyInPlay.style.height = "3rem";
-    moneyInPlay.style.width = "3rem";
+    moneyInPlay.style.height = "3.5rem";
+    moneyInPlay.style.width = "3.5rem";
   }
 }
 
@@ -356,19 +356,24 @@ function maxBet() {
     gameState.moneyInPlay < gameState.maximumBet &&
     gameState.maximumBet - gameState.moneyInPlay <= gameState.money
   ) {
-    let subtractFromMoney = 50 - gameState.moneyInPlay;
+    let subtractFromMoney = gameState.maximumBet - gameState.moneyInPlay;
     gameState.money -= subtractFromMoney;
-    gameState.moneyInPlay = 50;
+    gameState.moneyInPlay = gameState.maximumBet;
     moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
-    moneyInPlay.style.height = "3rem";
-    moneyInPlay.style.width = "3rem";
+    moneyInPlay.style.height = "3.5rem";
+    moneyInPlay.style.width = "3.5rem";
   }
 }
 
 function clearBet() {
-  gameState.money += gameState.moneyInPlay;
+  console.log(gameState.money);
+  console.log(gameState.moneyInPlay);
+  let returnMoney = gameState.moneyInPlay;
+  console.log(returnMoney);
+  gameState.money += returnMoney;
+  console.log(gameState.money);
   gameState.moneyInPlay = 0;
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
   moneyInPlay.innerHTML = "";
@@ -804,10 +809,10 @@ function checkBlackjack() {
 
 function submitOptions() {
   console.log(optionsMoney.value);
-  gameState.money = optionsMoney.value;
-  gameState.minimumBet = optionsMinBet.value;
-  gameState.maximumBet = optionsMaxBet.value;
-  gameState.numDecks = optionsNumDecks.value;
+  gameState.money = parseInt(optionsMoney.value);
+  gameState.minimumBet = parseInt(optionsMinBet.value);
+  gameState.maximumBet = parseInt(optionsMaxBet.value);
+  gameState.numDecks = parseInt(optionsNumDecks.value);
   gameState.moneyInPlay = 0;
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
   moneyInPlay.innerHTML = "";
