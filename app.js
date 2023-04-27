@@ -644,7 +644,7 @@ function insuranceYes() {
       suitCheck[suitCheck.length - 1] === "♥" ||
       suitCheck[suitCheck.length - 1] === "♦"
     ) {
-      card.style.color = "red";
+      dealerHiddenCard.style.color = "red";
     }
 
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
@@ -675,11 +675,12 @@ function insuranceNo() {
     dealerHiddenCard.style.removeProperty("background-image");
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
 
+    let suitCheck = gameState.dealerCards[1];
     if (
       suitCheck[suitCheck.length - 1] === "♥" ||
       suitCheck[suitCheck.length - 1] === "♦"
     ) {
-      card.style.color = "red";
+      dealerHiddenCard.style.color = "red";
     }
 
     gameState.moneyInPlay *= 2;
@@ -707,7 +708,7 @@ function checkBlackjack() {
     gameState.playerCards.length === 2 &&
     gameState.dealerValue != 21
   ) {
-    gameState.moneyInPlay = Math.floor(gameState.moneyInPlay * 1.5);
+    gameState.moneyInPlay = Math.ceil(gameState.moneyInPlay * 1.5);
     gameWon();
   }
 }
