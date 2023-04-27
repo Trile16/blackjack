@@ -1,3 +1,73 @@
+// Game State
+
+const gameState = {
+  playerName: "Player 1",
+  money: 100,
+  cards: [
+    "2♠",
+    "3♠",
+    "4♠",
+    "5♠",
+    "6♠",
+    "7♠",
+    "8♠",
+    "9♠",
+    "10♠",
+    "J♠",
+    "Q♠",
+    "K♠",
+    "A♠",
+    "2♣",
+    "3♣",
+    "4♣",
+    "5♣",
+    "6♣",
+    "7♣",
+    "8♣",
+    "9C♣",
+    "10♣",
+    "J♣",
+    "Q♣",
+    "K♣",
+    "A♣",
+    "2♦",
+    "3♦",
+    "4♦",
+    "5♦",
+    "6♦",
+    "7♦",
+    "8♦",
+    "9♦",
+    "10♦",
+    "J♦",
+    "Q♦",
+    "K♦",
+    "A♦",
+    "2♥",
+    "3♥",
+    "4♥",
+    "5♥",
+    "6♥",
+    "7♥",
+    "8♥",
+    "9♥",
+    "10♥",
+    "J♥",
+    "Q♥",
+    "K♥",
+    "A♥",
+  ],
+  minimumBet: 5,
+  maximumBet: 50,
+  moneyInPlay: 0,
+  playerCards: [],
+  dealerCards: [],
+  playerValue: 0,
+  dealerValue: 0,
+  playerAceCounter: 0,
+  dealerAceCounter: 0,
+};
+
 // Document Object Model
 const body = document.getElementsByTagName("body");
 
@@ -23,7 +93,7 @@ function renderHTML() {
   table.appendChild(playerSeat);
   const money = document.createElement("div");
   money.setAttribute("id", "money-display");
-  money.innerHTML = "Money: 100";
+  money.innerHTML = `Money: $${gameState.money}`;
   const playerChoices = document.createElement("span");
   playerChoices.setAttribute("id", "player-choice");
   const five = document.createElement("button");
@@ -105,75 +175,6 @@ stay.addEventListener("click", playerStay);
 double.addEventListener("click", doubleDown);
 yes.addEventListener("click", insuranceYes);
 no.addEventListener("click", insuranceNo);
-// Game State
-
-const gameState = {
-  playerName: "Player 1",
-  money: 100,
-  cards: [
-    "2S",
-    "3S",
-    "4S",
-    "5S",
-    "6S",
-    "7S",
-    "8S",
-    "9S",
-    "10S",
-    "JS",
-    "QS",
-    "KS",
-    "AS",
-    "2C",
-    "3C",
-    "4C",
-    "5C",
-    "6C",
-    "7C",
-    "8C",
-    "9C",
-    "10C",
-    "JC",
-    "QC",
-    "KC",
-    "AC",
-    "2D",
-    "3D",
-    "4D",
-    "5D",
-    "6D",
-    "7D",
-    "8D",
-    "9D",
-    "10D",
-    "JD",
-    "QD",
-    "KD",
-    "AD",
-    "2H",
-    "3H",
-    "4H",
-    "5H",
-    "6H",
-    "7H",
-    "8H",
-    "9H",
-    "10H",
-    "JH",
-    "QH",
-    "KH",
-    "AH",
-  ],
-  minimumBet: 5,
-  maximumBet: 50,
-  moneyInPlay: 0,
-  playerCards: [],
-  dealerCards: [],
-  playerValue: 0,
-  dealerValue: 0,
-  playerAceCounter: 0,
-  dealerAceCounter: 0,
-};
 
 // Game Functionality
 
@@ -184,7 +185,7 @@ function addFive() {
   ) {
     gameState.money -= 5;
     gameState.moneyInPlay += 5;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
   }
 }
@@ -196,7 +197,7 @@ function addTen() {
   ) {
     gameState.money -= 10;
     gameState.moneyInPlay += 10;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
   }
 }
@@ -208,7 +209,7 @@ function addTwentyFive() {
   ) {
     gameState.money -= 25;
     gameState.moneyInPlay += 25;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     moneyInPlay.innerHTML = `${gameState.moneyInPlay}`;
   }
 }
@@ -231,58 +232,58 @@ function gameStart() {
     changeButtonsForPlay();
     if (gameState.cards.length <= 10) {
       gameState.cards = [
-        "2S",
-        "3S",
-        "4S",
-        "5S",
-        "6S",
-        "7S",
-        "8S",
-        "9S",
-        "10S",
-        "JS",
-        "QS",
-        "KS",
-        "AS",
-        "2C",
-        "3C",
-        "4C",
-        "5C",
-        "6C",
-        "7C",
-        "8C",
-        "9C",
-        "10C",
-        "JC",
-        "QC",
-        "KC",
-        "AC",
-        "2D",
-        "3D",
-        "4D",
-        "5D",
-        "6D",
-        "7D",
-        "8D",
-        "9D",
-        "10D",
-        "JD",
-        "QD",
-        "KD",
-        "AD",
-        "2H",
-        "3H",
-        "4H",
-        "5H",
-        "6H",
-        "7H",
-        "8H",
-        "9H",
-        "10H",
-        "JH",
-        "QH",
-        "KH",
-        "AH",
+        "2♠",
+        "3♠",
+        "4♠",
+        "5♠",
+        "6♠",
+        "7♠",
+        "8♠",
+        "9♠",
+        "10♠",
+        "J♠",
+        "Q♠",
+        "K♠",
+        "A♠",
+        "2♣",
+        "3♣",
+        "4♣",
+        "5♣",
+        "6♣",
+        "7♣",
+        "8♣",
+        "9C♣",
+        "10♣",
+        "J♣",
+        "Q♣",
+        "K♣",
+        "A♣",
+        "2♦",
+        "3♦",
+        "4♦",
+        "5♦",
+        "6♦",
+        "7♦",
+        "8♦",
+        "9♦",
+        "10♦",
+        "J♦",
+        "Q♦",
+        "K♦",
+        "A♦",
+        "2♥",
+        "3♥",
+        "4♥",
+        "5♥",
+        "6♥",
+        "7♥",
+        "8♥",
+        "9♥",
+        "10♥",
+        "J♥",
+        "Q♥",
+        "K♥",
+        "A♥",
       ];
     }
     dealCards();
@@ -294,7 +295,6 @@ function gameStart() {
 
 function changeButtonsForPlay() {
   // This will remove the pre-game buttons and add in gameplay buttons
-  console.log("hello! you've started the game");
   five.setAttribute("class", "hidden");
   ten.setAttribute("class", "hidden");
   twentyFive.setAttribute("class", "hidden");
@@ -318,10 +318,17 @@ function dealCards() {
     card.setAttribute("class", "card");
     card.innerHTML = gameState.cards[cardChoice];
 
+    let suitCheck = card.innerHTML;
+
+    if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+      card.style.color = "red";
+    }
+
     if (i % 2 === 0) {
       gameState.playerCards.push(gameState.cards[cardChoice]);
       playerSeat.appendChild(card);
     } else if (i === 3) {
+      card.removeAttribute("style");
       card.innerHTML = "?";
       card.setAttribute("id", "dealer-hidden-card");
       gameState.dealerCards.push(gameState.cards[cardChoice]);
@@ -407,6 +414,8 @@ function checkDealerCardValue() {
       if (gameState.playerValue === 21 && gameState.dealerValue === 21) {
         const dealerHiddenCard = document.getElementById("dealer-hidden-card");
         dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+        yes.setAttribute("class", "hidden");
+        no.setAttribute("class", "hidden");
         gamePush();
       } else {
         hit.setAttribute("class", "hidden");
@@ -429,6 +438,12 @@ function playerHit() {
   card.setAttribute("class", "card");
   card.innerHTML = gameState.cards[cardChoice];
   gameState.playerCards.push(gameState.cards[cardChoice]);
+
+  let suitCheck = card.innerHTML;
+  if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+    card.style.color = "red";
+  }
+
   playerSeat.appendChild(card);
   gameState.cards.splice(cardChoice, 1);
   checkPlayerCardValue();
@@ -443,9 +458,14 @@ function dealerHit() {
   card.setAttribute("class", "card");
   card.innerHTML = gameState.cards[cardChoice];
   gameState.dealerCards.push(gameState.cards[cardChoice]);
+
+  let suitCheck = card.innerHTML;
+  if (suitCheck[1] === "♥" || suitCheck[1] === "♦") {
+    card.style.color = "red";
+  }
+
   dealerSeat.appendChild(card);
   gameState.cards.splice(cardChoice, 1);
-  setTimeout(() => {});
 }
 
 function playerStay() {
@@ -474,7 +494,7 @@ function doubleDown() {
   gameState.moneyInPlay *= 2;
 
   moneyInPlay.innerHTML = gameState.moneyInPlay;
-  moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+  moneyDisplay.innerHTML = `Money: $${gameState.money}`;
   playerHit();
   if (gameState.playerValue) {
     playerStay();
@@ -482,7 +502,6 @@ function doubleDown() {
 }
 
 function gameWon() {
-  console.log("BUST!");
   gameState.playerValue = 0;
   gameState.dealerValue = 0;
   gameState.playerCards = [];
@@ -491,7 +510,7 @@ function gameWon() {
   gameState.money += gameState.moneyInPlay * 2;
   moneyInPlay.innerHTML = `You have won ${gameState.moneyInPlay * 2}!`;
   gameState.moneyInPlay = 0;
-  moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+  moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
   hit.setAttribute("class", "hidden");
   stay.setAttribute("class", "hidden");
@@ -506,12 +525,11 @@ function gameWon() {
 }
 
 function gameLost() {
-  console.log("BUST!");
   gameState.playerValue = 0;
   gameState.dealerValue = 0;
   gameState.playerCards = [];
   gameState.dealerCards = [];
-  moneyInPlay.innerHTML = `You have lost ${gameState.moneyInPlay}...`;
+  moneyInPlay.innerHTML = `You have lost $${gameState.moneyInPlay}...`;
   gameState.moneyInPlay = 0;
 
   hit.setAttribute("class", "hidden");
@@ -536,7 +554,7 @@ function gamePush() {
   gameState.money += gameState.moneyInPlay;
   gameState.moneyInPlay = 0;
   moneyInPlay.innerHTML = "Push!";
-  moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+  moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
   hit.setAttribute("class", "hidden");
   stay.setAttribute("class", "hidden");
@@ -561,7 +579,7 @@ function insuranceYes() {
   } else {
     gameState.money -= gameState.moneyInPlay;
     moneyInPlay.innerHTML = gameState.moneyInPlay;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     yes.setAttribute("class", "hidden");
     no.setAttribute("class", "hidden");
     hit.removeAttribute("class");
@@ -579,10 +597,11 @@ function insuranceNo() {
     const dealerHiddenCard = document.getElementById("dealer-hidden-card");
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
     gameState.moneyInPlay *= 2;
+    gameState.money -= gameState.moneyInPlay;
     gameLost();
   } else {
     moneyInPlay.innerHTML = gameState.moneyInPlay;
-    moneyDisplay.innerHTML = `Money: ${gameState.money}`;
+    moneyDisplay.innerHTML = `Money: $${gameState.money}`;
     yes.setAttribute("class", "hidden");
     no.setAttribute("class", "hidden");
     hit.removeAttribute("class");

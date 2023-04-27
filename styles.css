@@ -15,7 +15,7 @@ body {
   width: 50rem;
   height: 50rem;
   border-style: solid;
-  border-width: 1px;
+  border-width: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,7 +25,8 @@ body {
 }
 
 #game-table {
-  background-color: green;
+  background-image: url(./assets/green-felt.jpg);
+  background-size: 100% 110%;
   border-style: solid;
   border-radius: 10%;
   border-width: 10px;
@@ -53,15 +54,22 @@ body {
   height: 40px;
   margin: 2px;
   border-radius: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #game-title {
   font-size: 6rem;
   font-family: "Neonderthaw", cursive;
-  color: white;
+  color: #fff;
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
 }
 
-@-webkit-keyframes game-title {
+@keyframes game-title {
   from {
     text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073,
       0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
@@ -70,4 +78,9 @@ body {
     text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6,
       0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
   }
+}
+
+#money-display {
+  font-size: 2rem;
+  font-family: "Josefin Sans", sans-serif;
 }
