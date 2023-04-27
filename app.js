@@ -666,6 +666,7 @@ function insuranceYes() {
     }
 
     dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+    dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
     gameState.moneyInPlay *= 2;
     gameWon();
   } else {
@@ -701,6 +702,7 @@ function insuranceNo() {
       dealerHiddenCard.style.color = "red";
     }
 
+    dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
     gameState.moneyInPlay *= 2;
     gameState.money -= gameState.moneyInPlay;
     gameLost();
@@ -726,7 +728,7 @@ function checkBlackjack() {
     gameState.playerCards.length === 2 &&
     gameState.dealerValue != 21
   ) {
-    gameState.moneyInPlay = Math.ceil(gameState.moneyInPlay * 1.5);
+    gameState.moneyInPlay = Math.ceil(gameState.moneyInPlay * 1.25);
     gameWon();
   }
 }
