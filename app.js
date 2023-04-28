@@ -753,8 +753,9 @@ function checkDealerCardValue() {
 }
 
 function playerHit() {
-  if (gameState.playerCards.length > 1 || gameState.splitArray.length > 1)
-    double.style.display = "none";
+  double.style.display = "none";
+  split.style.display = "none";
+
   let cardChoice = Math.floor(Math.random() * gameState.cards.length);
   const card = document.createElement("div");
   card.setAttribute("class", "card");
