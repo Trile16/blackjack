@@ -983,7 +983,7 @@ function checkSplitHandWin() {
         gamePush();
       } else if (gameState.playerSplitValue === gameState.dealerValue) {
         gameState.moneyInPlay /= 2;
-        gameState.money += moneyInPlay;
+        gameState.money += gameState.moneyInPlay;
         gameLost();
       }
     } else if (gameState.playerValue === gameState.dealerValue) {
@@ -992,7 +992,7 @@ function checkSplitHandWin() {
         gameState.playerSplitValue > 21
       ) {
         gameState.moneyInPlay /= 2;
-        gameState.money += moneyInPlay;
+        gameState.money += gameState.moneyInPlay;
         gameLost();
       } else if (
         gameState.playerSplitValue > gameState.dealerValue &&
