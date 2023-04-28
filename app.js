@@ -73,6 +73,7 @@ const gameState = {
   numDecks: 4,
   isSplit: false,
   optionsToggle: false,
+  isFirstGame: true,
 };
 
 // Game Rendering
@@ -356,6 +357,7 @@ const optionsMoneyVisual = document.getElementById("money_option_disp");
 const optionsNumDecksVisual = document.getElementById("num_decks_option_disp");
 const optionsMinBetVisual = document.getElementById("min_bet_option_disp");
 const optionsMaxBetVisual = document.getElementById("max_bet_option_disp");
+const playerSplitSeat = document.getElementById("playerSplitSeat");
 
 // Event Listeners
 five.addEventListener("click", addFive);
@@ -390,6 +392,7 @@ function addFive() {
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
     moneyInPlay.style.height = "3.5rem";
     moneyInPlay.style.width = "3.5rem";
+    playerSplitSeat.style.display = "none";
   }
 }
 
@@ -406,6 +409,7 @@ function addTen() {
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
     moneyInPlay.style.height = "3.5rem";
     moneyInPlay.style.width = "3.5rem";
+    playerSplitSeat.style.display = "none";
   }
 }
 
@@ -422,6 +426,7 @@ function addTwentyFive() {
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
     moneyInPlay.style.height = "3.5rem";
     moneyInPlay.style.width = "3.5rem";
+    playerSplitSeat.style.display = "none";
   }
 }
 
@@ -439,6 +444,7 @@ function maxBet() {
     moneyInPlay.style.backgroundImage = "url('./assets/chip.png')";
     moneyInPlay.style.height = "3.5rem";
     moneyInPlay.style.width = "3.5rem";
+    playerSplitSeat.style.display = "none";
   }
 }
 
@@ -456,12 +462,13 @@ function clearBet() {
   moneyInPlay.style.removeProperty("background-image");
   moneyInPlay.style.removeProperty("height");
   moneyInPlay.style.removeProperty("width");
+  playerSplitSeat.style.display = "none";
 }
 
 function gameStart() {
   if (gameState.moneyInPlay >= gameState.minimumBet) {
     changeButtonsForPlay();
-    if (gameState.cards.length <= 10) {
+    if (gameState.isFirstGame) {
       deckReload();
     }
     dealCards();
@@ -474,6 +481,8 @@ function gameStart() {
 function deckReload(optionsCheck) {
   if (optionsCheck) {
     alert("Success! Settings updated!");
+  } else if (gameState.isFirstGame) {
+    gameState.isFirstGame = false;
   } else {
     alert("The shoe has been reshuffled!");
   }
@@ -493,6 +502,12 @@ function changeButtonsForPlay() {
   maxButton.style.display = "none";
   clear.style.display = "none";
   startGame.style.display = "none";
+  gameState.optionsToggle = false;
+  optionsButton.style.display = "none";
+  optionsMoney.style.display = "none";
+  optionsNumDecks.style.display = "none";
+  optionsMinBet.style.display = "none";
+  optionsMaxBet.style.display = "none";
   optionsSubmitButton.style.display = "none";
   hit.style.removeProperty("display");
   stay.style.removeProperty("display");
@@ -513,6 +528,7 @@ function changeButtonsForSplitPlay() {
   hit.style.display = "none";
   stay.style.display = "none";
   double.style.display = "none";
+  playerSplitSeat.display = "none";
 
   hitSplit.style.removeProperty("display");
   staySplit.style.removeProperty("display");
@@ -525,7 +541,7 @@ function changeButtonsForBetting() {
   maxButton.style.removeProperty("display");
   clear.style.removeProperty("display");
   startGame.style.removeProperty("display");
-  optionsSubmitButton.style.removeProperty("display");
+  optionsButton.style.removeProperty("display");
 
   hit.style.display = "none";
   stay.style.display = "none";
@@ -536,6 +552,11 @@ function changeButtonsForBetting() {
   doubleSplit.style.display = "none";
   yes.style.display = "none";
   no.style.display = "none";
+
+  //Reshuffle if deck is too small
+  if (gameState.cards.length < 10) {
+    deckReload();
+  }
 }
 
 function dealCards() {
@@ -700,6 +721,8 @@ function checkDealerCardValue() {
         moneyInPlay.style.removeProperty("height");
         moneyInPlay.style.removeProperty("width");
         moneyInPlay.innerHTML = "Insurance?";
+        moneyInPlay.style.backgroundImage = "url('./assets/gold-plate.png')";
+        moneyInPlay.style.width = "20rem";
         yes.style.removeProperty("display");
         no.style.removeProperty("display");
       }
@@ -936,25 +959,26 @@ function checkSplitHandWin() {
       gameState.dealerValue === gameState.playerValue &&
       gameState.dealerValue < gameState.playerSplitValue
     ) {
-      gameState.moneyInPlay /= 1.5;
+      gameState.moneyInPlay -= gameState.moneyInPlay / 4;
       gameWon();
     } else if (
       gameState.dealerValue === gameState.playerSplitValue &&
       gameState.dealerValue < gameState.playerValue
     ) {
-      gameState.moneyInPlay /= 1.5;
+      gameState.moneyInPlay -= gameState.moneyInPlay / 4;
       gameWon();
     } else if (
       gameState.dealerValue === gameState.playerValue &&
       gameState.dealerValue > gameState.playerSplitValue
     ) {
+      gameState.moneyInPlay -= gameState.moneyInPlay * 0.75;
       gameState.money += gameState.moneyInPlay / 4;
       gameLost();
     } else if (
       gameState.dealerValue === gameState.playerSplitValue &&
       gameState.dealerValue > gameState.playerValue
     ) {
-      gameState.money += gameState.moneyInPlay / 4;
+      gameState.moneyInPlay -= gameState.moneyInPlay * 0.75;
       gameLost();
     } else {
       gameLost();
@@ -973,6 +997,8 @@ function gameWon() {
   moneyInPlay.style.removeProperty("height");
   moneyInPlay.style.removeProperty("width");
   moneyInPlay.innerHTML = `You have won $${gameState.moneyInPlay * 2}!`;
+  moneyInPlay.style.backgroundImage = "url('./assets/gold-plate.png')";
+  moneyInPlay.style.width = "20rem";
   gameState.moneyInPlay = 0;
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
 
@@ -989,6 +1015,9 @@ function gameLost() {
   moneyInPlay.style.removeProperty("height");
   moneyInPlay.style.removeProperty("width");
   moneyInPlay.innerHTML = `You have lost $${gameState.moneyInPlay}...`;
+  moneyInPlay.style.backgroundImage = "url('./assets/gold-plate.png')";
+  moneyInPlay.style.width = "20rem";
+
   gameState.moneyInPlay = 0;
 
   changeButtonsForBetting();
@@ -1009,6 +1038,8 @@ function gamePush() {
   moneyInPlay.style.removeProperty("width");
   moneyInPlay.innerHTML = "Push!";
   moneyDisplay.innerHTML = `Money: $${gameState.money}`;
+  moneyInPlay.style.backgroundImage = "url('./assets/gold-plate.png')";
+  moneyInPlay.style.width = "20rem";
 
   changeButtonsForBetting();
   clearSplitVariables();
@@ -1131,6 +1162,7 @@ function submitOptions() {
   gameState.numDecks = parseInt(optionsNumDecks.value);
   gameState.moneyInPlay = 0;
   gameState.optionsToggle = false;
+  gameState.isFirstGame = true;
   optionsMoney.style.display = "none";
   optionsNumDecks.style.display = "none";
   optionsMinBet.style.display = "none";
