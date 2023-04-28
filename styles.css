@@ -24,7 +24,7 @@ body {
   flex-direction: column;
   background-image: url(https://cdn.create.vista.com/api/media/small/393553686/stock-photo-texture-red-carpet-dense-red);
   border-radius: 5%;
-  padding-top: 0;
+  padding: 0px 0px 16px;
 }
 
 #game-table {
@@ -182,7 +182,7 @@ button:-webkit-details-marker {
 #options {
   width: 10rem;
   background-color: grey;
-  height: 45rem;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,4 +190,13 @@ button:-webkit-details-marker {
   border-style: solid;
   border-width: 5px;
   border-left: 0px;
+}
+
+output {
+  font-weight: lighter;
+  font-size: 1.4rem;
+}
+
+label {
+  text-decoration: underline;
 }
