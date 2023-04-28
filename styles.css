@@ -205,6 +205,7 @@ label {
   html {
     background-image: url(https://cdn.create.vista.com/api/media/small/393553686/stock-photo-texture-red-carpet-dense-red);
     overflow-y: scroll;
+    width: 100%;
   }
   body {
     background-image: none;
