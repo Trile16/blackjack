@@ -679,11 +679,8 @@ function checkDealerCardValue() {
   for (let card of gameState.dealerCards) {
     console.log(card[0]);
     if (card[0] === "A") {
-      if (gameState.dealerValue + 11 > 21) {
-        gameState.dealerValue++;
-      } else {
-        gameState.dealerValue += 11;
-      }
+      gameState.dealerAceCounter++;
+      gameState.dealerValue += 11;
     } else if (
       card[0] === "J" ||
       card[0] === "Q" ||
