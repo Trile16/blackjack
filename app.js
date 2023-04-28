@@ -856,6 +856,7 @@ function playerStay() {
       }
     }
   } else {
+    playerSplitHit();
     checkPlayerSplitCardValue();
     playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}, ${gameState.playerSplitValue}`;
     changeButtonsForSplitPlay();
