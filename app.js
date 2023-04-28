@@ -105,7 +105,7 @@ function renderHTML() {
   moneyOption.style.display = "none";
   const moneyOptionOutput = document.createElement("output");
   moneyOptionOutput.setAttribute("id", "money_option_disp");
-  moneyOptionOutput.innerHTML = "100";
+  moneyOptionOutput.innerHTML = "$100";
 
   options.appendChild(moneyOptionLabel);
   options.appendChild(moneyOptionOutput);
@@ -1146,7 +1146,7 @@ function toggleOptionsWindow() {
     optionsNumDecks.style.display = "none";
     optionsMinBet.style.display = "none";
     optionsMaxBet.style.display = "none";
-    optionsMoneyVisual.innerHTML = gameState.startingMoney;
+    optionsMoneyVisual.innerHTML = `$${gameState.startingMoney}`;
     optionsNumDecksVisual.innerHTML = gameState.numDecks;
     optionsMinBetVisual.innerHTML = gameState.minimumBet;
     optionsMaxBetVisual.innerHTML = gameState.maximumBet;
@@ -1167,7 +1167,7 @@ function submitOptions() {
   optionsNumDecks.style.display = "none";
   optionsMinBet.style.display = "none";
   optionsMaxBet.style.display = "none";
-  optionsMoneyVisual.innerHTML = gameState.money;
+  optionsMoneyVisual.innerHTML = `$${gameState.startingMoney}`;
   optionsNumDecksVisual.innerHTML = gameState.numDecks;
   optionsMinBetVisual.innerHTML = gameState.minimumBet;
   optionsMaxBetVisual.innerHTML = gameState.maximumBet;
