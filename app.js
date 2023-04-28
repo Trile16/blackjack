@@ -709,6 +709,7 @@ function checkDealerCardValue() {
       if (gameState.playerValue === 21 && gameState.dealerValue === 21) {
         const dealerHiddenCard = document.getElementById("dealer-hidden-card");
         dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+        dealerHiddenCard.style.removeProperty("background-image");
         yes.style.display = "none";
         no.style.display = "none";
         gamePush();
@@ -804,7 +805,7 @@ function playerSplitHit() {
   if (gameState.playerSplitValue > 21 && gameState.playerValue > 21) {
     gameLost();
   } else if (gameState.playerSplitValue > 21) {
-    checkPlayerCardValue();
+    checkSplitHandWin();
   }
 }
 
@@ -926,63 +927,85 @@ function splitHand() {
 }
 
 function checkSplitHandWin() {
+  const dealerHiddenCard = document.getElementById("dealer-hidden-card");
+  dealerHiddenCard.style.removeProperty("background-image");
+
+  let suitCheck = gameState.dealerCards[1];
+  if (
+    suitCheck[suitCheck.length - 1] === "♥" ||
+    suitCheck[suitCheck.length - 1] === "♦"
+  ) {
+    dealerHiddenCard.style.color = "red";
+  }
+
+  dealerHiddenCard.innerHTML = gameState.dealerCards[1];
+  dealerValueDisplay.innerHTML = `Dealer: ${gameState.dealerValue}`;
+
   while (gameState.dealerValue < 17) {
     dealerHit();
     checkDealerCardValue();
   }
+
   if (gameState.dealerValue > 21) {
-    if (gameState.playerValue > 21 && gameState.playerSplitValue < 21) {
+    if (gameState.playerValue > 21 && gameState.playerSplitValue <= 21) {
       gamePush();
-    } else if (gameState.playerValue < 21 && gameState.playerSplitValue > 21) {
+    } else if (gameState.playerValue <= 21 && gameState.playerSplitValue > 21) {
       gamePush();
     } else {
       gameWon();
     }
   } else if (gameState.dealerValue >= 17) {
     if (
-      gameState.dealerValue < gameState.playerValue &&
-      gameState.playerValue <= 21 &&
-      gameState.playerSplitValue > gameState.dealerValue
+      gameState.playerValue > gameState.dealerValue &&
+      gameState.playerValue <= 21
     ) {
-      gameWon();
-    } else if (
-      gameState.dealerValue < gameState.playerValue &&
-      gameState.playerValue <= 21 &&
-      gameState.playerSplitValue < gameState.dealerValue
-    ) {
-      gamePush();
-    } else if (
-      gameState.dealerValue > gameState.playerValue &&
-      gameState.playerSplitValue < gameState.dealerValue
-    ) {
-      gamePush();
-    } else if (
-      gameState.dealerValue === gameState.playerValue &&
-      gameState.dealerValue < gameState.playerSplitValue
-    ) {
-      gameState.moneyInPlay -= gameState.moneyInPlay / 4;
-      gameWon();
-    } else if (
-      gameState.dealerValue === gameState.playerSplitValue &&
-      gameState.dealerValue < gameState.playerValue
-    ) {
-      gameState.moneyInPlay -= gameState.moneyInPlay / 4;
-      gameWon();
-    } else if (
-      gameState.dealerValue === gameState.playerValue &&
-      gameState.dealerValue > gameState.playerSplitValue
-    ) {
-      gameState.moneyInPlay -= gameState.moneyInPlay * 0.75;
-      gameState.money += gameState.moneyInPlay / 4;
-      gameLost();
-    } else if (
-      gameState.dealerValue === gameState.playerSplitValue &&
-      gameState.dealerValue > gameState.playerValue
-    ) {
-      gameState.moneyInPlay -= gameState.moneyInPlay * 0.75;
-      gameLost();
-    } else {
-      gameLost();
+      if (
+        gameState.playerSplitValue < gameState.dealerValue ||
+        gameState.playerSplitValue > 21
+      ) {
+        gamePush();
+      } else if (
+        gameState.playerSplitValue > gameState.dealerValue &&
+        gameState.playerSplitValue <= 21
+      ) {
+        gameWon();
+      } else if (gameState.playerSplitValue === gameState.dealerValue) {
+        gameState.moneyInPlay /= 2;
+        gameWon();
+      }
+    } else if (gameState.playerValue < gameState.dealerValue) {
+      if (
+        gameState.playerSplitValue < gameState.dealerValue ||
+        gameState.playerSplitValue > 21
+      ) {
+        gameLost();
+      } else if (
+        gameState.playerSplitValue > gameState.dealerValue &&
+        gameState.playerSplitValue <= 21
+      ) {
+        gamePush();
+      } else if (gameState.playerSplitValue === gameState.dealerValue) {
+        gameState.moneyInPlay /= 2;
+        gameState.money += moneyInPlay;
+        gameLost();
+      }
+    } else if (gameState.playerValue === gameState.dealerValue) {
+      if (
+        gameState.playerSplitValue < gameState.dealerValue ||
+        gameState.playerSplitValue > 21
+      ) {
+        gameState.moneyInPlay /= 2;
+        gameState.money += moneyInPlay;
+        gameLost();
+      } else if (
+        gameState.playerSplitValue > gameState.dealerValue &&
+        gameState.playerSplitValue <= 21
+      ) {
+        gameState.moneyInPlay /= 2;
+        gameWon();
+      } else if (gameState.playerSplitValue === gameState.dealerValue) {
+        gamePush();
+      }
     }
   }
 }
@@ -1026,7 +1049,6 @@ function gameLost() {
 }
 
 function gamePush() {
-  console.log("BUST!");
   gameState.playerValue = 0;
   gameState.dealerValue = 0;
   gameState.playerCards = [];
@@ -1192,6 +1214,10 @@ function submitOptions() {
 function clearTable() {
   while (dealerSeat.hasChildNodes()) {
     dealerSeat.removeChild(dealerSeat.firstChild);
+  }
+
+  while (playerSplitSeat.hasChildNodes()) {
+    playerSplitSeat.removeChild(playerSplitSeat.firstChild);
   }
 
   while (playerSeat.hasChildNodes()) {
