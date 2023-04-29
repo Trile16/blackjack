@@ -777,6 +777,8 @@ function playerHit() {
     checkPlayerSplitCardValue();
     playerValueDisplay.innerHTML = `Player: ${gameState.playerValue}, ${gameState.playerSplitValue}`;
     changeButtonsForSplitPlay();
+  } else if (gameState.playerValue === 21) {
+    playerStay();
   }
 }
 
@@ -803,6 +805,8 @@ function playerSplitHit() {
     gameLost();
   } else if (gameState.playerSplitValue > 21) {
     checkSplitHandWin();
+  } else if (gameState.playerSplitValue === 21) {
+    playerSplitStay();
   }
 }
 
